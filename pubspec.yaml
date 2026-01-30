@@ -1,0 +1,45 @@
+name: hkjc_updater
+description: "Helps you update HKJC Apps easily!"
+publish_to: 'none'
+version: 0.0.4+4
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  go_router: ^17.0.1
+  spookyservices:
+    path: /home/kipper/Documents/GitKraken/SpookyServices
+    # can be found at https://github.com/SpookyKipper/SpookyServicesFlutter/
+    # you can use this for local dev, but please change back to the path above when contributing
+  webview_flutter: ^4.13.0
+  go_transitions: ^0.8.2
+  dynamik_theme: ^0.1.5
+  dynamic_color: ^1.8.1
+  ota_update_fork: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  one_ui:
+    path: /home/kipper/Documents/GitKraken/one_ui_flutter
+  package_info_plus: ^9.0.0
+    # can be found at https://github.com/SpookyKipper/one_ui_flutter/
+    # you can use this for local dev, but please change back to the path above when contributing
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  change_app_package_name: ^1.5.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/icon.png
+    - assets/images/RacingTouch.png
+    - assets/images/hkjctv.png
+    - assets/images/3in1.png
+    - assets/images/accountopening.png
+
+

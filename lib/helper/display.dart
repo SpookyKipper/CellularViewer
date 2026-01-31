@@ -8,14 +8,40 @@ String getNetworkIcon(CellData? cellData) {
     case '3G':
       return 'assets/images/NetworkIcons/3G.png';
     case '4G':
-      if (cellData.lteCcCount > 1) {
+      if (cellData.nrCcCount > 0) {
+        // 4G + 5G NSA
+        if (cellData.lteCcCount > 1) {
+          // LTE CA
+          if (cellData.nrCcCount > 1) {
+            // LTE CA + NR NSA CA
+            return 'assets/images/NetworkIcons/5GPlusNSA_With_4GPlus.png';
+          }
+          // LTE CA + NR NSA
+          return 'assets/images/NetworkIcons/5GNSA_With_4GPlus.png';
+        }
+
+        if (cellData.nrCcCount > 1) {
+          // NR NSA CA without LTE CA
+          return 'assets/images/NetworkIcons/5GPlusNSA.png';
+        }
+
+        // NR NSA without LTE CA
+        return 'assets/images/NetworkIcons/5GNSA.png';
+      }
+
+      if (cellData.lteCcCount > 1) { // LTE CA only
         return 'assets/images/NetworkIcons/4GPlus.png';
       }
+
+      // Standard 4G
       return 'assets/images/NetworkIcons/4G.png';
-    case 'NSA':
-      return 'assets/images/icons/5g_nsa_icon.png';
     case 'SA':
-      return 'assets/images/5g_sa_icon.png';
+      if (cellData.nrCcCount > 1) { // NR SA CA
+        return 'assets/images/NetworkIcons/5GPlusSA.png';
+      }
+
+      // Standard NR SA
+      return 'assets/images/NetworkIcons/5GSA.png';
     default:
       return 'assets/images/icon.png';
   }
@@ -86,5 +112,26 @@ String getSinrDisplay(double sinr) {
   } else {
     rating = "Outstanding";
   }
-  return "${sinr.toInt()} dB ($rating)";      
+  return "${sinr.toInt()} dB ($rating)";
+}
+
+String getRsrqDisplay(double rsrq) {
+  if (rsrq == 0) {
+    return "-";
+  }
+  String rating;
+  if (rsrq < -20) {
+    rating = "Very Poor";
+  } else if (rsrq < -15) {
+    rating = "Poor";
+  } else if (rsrq < -10) {
+    rating = "Fair";
+  } else if (rsrq < -5) {
+    rating = "Good";
+  } else if (rsrq < 0) {
+    rating = "Excellent";
+  } else {
+    rating = "Outstanding";
+  }
+  return "${rsrq.toInt()} dB ($rating)";
 }

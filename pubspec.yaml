@@ -43,8 +43,12 @@ flutter:
     - assets/images/NetworkIcons/5GPlus.png
     - assets/images/NetworkIcons/5GPlus_With_4GPlus.png
     - assets/images/NetworkIcons/5GSA.png
+    - assets/images/NetworkIcons/5GPlusSA.png
+    - assets/images/NetworkIcons/5GPlusNSA.png
     - assets/images/NetworkIcons/5GSub6.png
     - assets/images/NetworkIcons/5G_With_4GPlus.png
+    - assets/images/NetworkIcons/5GNSA_With_4GPlus.png
+    - assets/images/NetworkIcons/5GPlusNSA_With_4GPlus.png
     - assets/images/NetworkIcons/H.png
     - assets/images/NetworkIcons/H+.png
     - assets/images/NetworkIcons/LTE.png

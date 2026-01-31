@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cellular_viewer/helper/bandCalc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 
 class CellData {
@@ -11,20 +12,18 @@ class CellData {
   final List<String> nrCcBands; // e.g. 3500, 4900
   final double rsrp;
   final double rsrq;
-  final double rssi;
   final double sinr; // or SNR for 4G
   final String ta; // 4G only
 
   CellData({
     required this.networkType,
-    required this.lteCcCount,
+    this.lteCcCount = 0,
     this.lteCcBands = const [],
     this.nrCcCount = 0,
     this.nrCcBands = const [],
     required this.rsrp,
     required this.sinr,
     required this.rsrq,
-    required this.rssi,
     this.ta = '-',
   });
 
@@ -38,7 +37,7 @@ Future<CellData> getCellInfo() async {
   try {
     String? cellInfo = await CellInfo.getCellInfo;
     if (cellInfo == null) return Future.error("No cell info available");
-    // log(jsonDecode(cellInfo).toString());
+    // log(cellInfo);
 
     Map<String, dynamic> parsedCellInfo = jsonDecode(cellInfo);
 
@@ -50,11 +49,9 @@ Future<CellData> getCellInfo() async {
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
-      
       return processLteCellInfo(parsedCellInfo);
     } else if (type == 'NR') {
-      return Future.error("5G NR processing not implemented yet");
-      // processNrCellInfo(parsedCellInfo);
+      return processNrCellInfo(parsedCellInfo);
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -65,23 +62,23 @@ Future<CellData> getCellInfo() async {
 }
 
 CellData processLteCellInfo(Map<String, dynamic> data) {
-
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
-  log(cellDataList.toString());
+  // log(cellDataList.toString());
 
-  
   String bandName = cellDataList['bandLTE']['name'];
   double rsrp = cellDataList['signalLTE']['rsrp'].toDouble();
-  double rsrq =cellDataList['signalLTE']['rsrq'].toDouble();
+  double rsrq = cellDataList['signalLTE']['rsrq'].toDouble();
   double rssi = cellDataList['signalLTE']['rssi'].toDouble();
   double snr = cellDataList['signalLTE']['snr'].toDouble();
   String ta =
       "${cellDataList['signalLTE']['timingAdvance']} (${cellDataList['signalLTE']['timingAdvance'] * 78} m)";
 
   List<dynamic> secondaryCellList = data['neighboringCellList'];
-  int lteCcCount = 1;
-  List<Map<String,String>> lteCaBands = []; // e.g. [{NAME, EARFCN}, ...]
+  List<Map<String, String>> lteCaBands = []; // e.g. [{NAME, EARFCN}, ...]
+  List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, ARFCN}, ...]
+
+  // Collect LTE CA bands from secondary cells
   secondaryCellList.forEach((cell) {
     if (cell['type'] == 'LTE') {
       final cellData = cell['lte'];
@@ -89,25 +86,95 @@ CellData processLteCellInfo(Map<String, dynamic> data) {
       if (lteCaBands.contains({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
-      })) return;      
+      }))
+        return;
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       });
+    } else if (cell['type'] == 'NR') { // Collect NR NSA CA bands from secondary cells
+      final cellData = cell['nr'];
+      // log(cellData['bandNR'].toString());
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
+      if (nrCaBands.contains({
+        'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
+        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+      }))
+        return;
+      nrCaBands.add({
+        'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
+        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+      });
     }
   });
 
-  final List<String> lteCcBands = lteCaBands.map((e) =>e['NAME']!).toList();
+
+  final List<String> lteCcBands = lteCaBands.map((e) => e['NAME']!).toList();
   lteCcBands.insert(0, bandName);
-  final List<String> lteCCBandsClean = lteCcBands.toSet().toList(); // Remove duplicates
+  final List<String> lteCCBandsClean = lteCcBands
+      .toSet()
+      .toList(); // Remove duplicates
+
+
+  final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
+  final List<String> nrCcBandsClean = nrCcBands
+      .where((e) => e.isNotEmpty)
+      .toSet()
+      .toList(); // Remove duplicates
   return CellData(
     networkType: "4G",
     lteCcCount: lteCCBandsClean.length,
     lteCcBands: lteCCBandsClean,
+    nrCcCount: nrCcBandsClean.length,
+    nrCcBands: nrCcBandsClean,
     rsrp: rsrp,
     sinr: snr,
     rsrq: rsrq,
-    rssi: rssi,
     ta: ta,
+  );
+}
+
+
+
+CellData processNrCellInfo(Map<String, dynamic> data) {
+  Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
+
+  // log(cellDataList.toString());
+
+  String bandName = getNrBandName(cellDataList['bandNR']['downlinkFrequency']);
+  double rsrp = cellDataList['signalNR']['ssRsrp'].toDouble();
+  double rsrq = cellDataList['signalNR']['ssRsrq'].toDouble();
+  double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
+
+  List<dynamic> secondaryCellList = data['neighboringCellList'];
+  List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
+  secondaryCellList.forEach((cell) {
+    if (cell['type'] == 'NR') {
+      final cellData = cell['nr'];
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
+      if (nrCaBands.contains({
+        'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
+        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+      }))
+        return;
+      nrCaBands.add({
+        'NAME': getNrBandName(cellDataList['bandNR']['downlinkFrequency']),
+        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+      });
+    }
+  });
+
+  final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
+  nrCcBands.insert(0, bandName);
+  final List<String> nrCcBandsClean = nrCcBands
+      .toSet()
+      .toList(); // Remove duplicates
+  return CellData(
+    networkType: "SA",
+    nrCcCount: nrCcBandsClean.length,
+    nrCcBands: nrCcBandsClean,
+    rsrp: rsrp,
+    sinr: sinr,
+    rsrq: rsrq,
   );
 }

@@ -145,11 +145,13 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  getNetworkIcon4G(_cellData),
+                                  getNetworkIcon5G(_cellData),
                                   width: 35,
                                   height: 28,
                                 ),
-                                Text("700, 2100, 3500, 4900"),
+                                Text(_cellData != null
+                                      ? _cellData!.nrCcBands.join(" + ")
+                                      : "Loading...",),
                               ],
                             ),
                         ],
@@ -174,23 +176,6 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                "TA (4G Only)",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(7.0),
-                                child: Text(
-                                  _cellData != null ? _cellData!.ta : "-",
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                       Column(
@@ -208,7 +193,10 @@ class _HomePageState extends State<HomePage> {
                               Column(
                                 children: [
                                   Text(
-                                    "RSRP",
+                                    _cellData != null &&
+                                            _cellData!.networkType == "4G"
+                                        ? "RSRP"
+                                        : "SS RSRP",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -226,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                                     _cellData != null &&
                                             _cellData!.networkType == "4G"
                                         ? "SNR"
-                                        : "SINR",
+                                        : "SS SINR",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -238,6 +226,40 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                              Column(
+                                children: [
+                                  Text(
+                                    _cellData != null &&
+                                            _cellData!.networkType == "4G"
+                                        ? "RSRQ"
+                                        : "SS RSRQ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    getRsrqDisplay(
+                                      _cellData != null ? _cellData!.rsrq : 0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (_cellData != null &&
+                                  _cellData!.networkType == "4G")
+                                Column(
+                                  children: [
+                                    Text(
+                                      "TA",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text(
+                                      _cellData != null ? _cellData!.ta : "-",
+                                    ),
+                                  ],
+                                ),
                             ],
                           ),
                         ],

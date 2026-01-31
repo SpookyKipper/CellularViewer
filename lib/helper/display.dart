@@ -95,7 +95,7 @@ String getImsIcon(String? imsStatus) {
 }
 
 String getRsrpDisplay(double rsrp) {
-  if (rsrp == 0) {
+  if (rsrp == 2683662) {
     return "-";
   }
   String rating;
@@ -116,7 +116,7 @@ String getRsrpDisplay(double rsrp) {
 }
 
 String getSinrDisplay(double sinr) {
-  if (sinr == 0) {
+  if (sinr == 2683662) {
     return "-";
   }
   String rating;
@@ -137,7 +137,7 @@ String getSinrDisplay(double sinr) {
 }
 
 String getRsrqDisplay(double rsrq) {
-  if (rsrq == 0) {
+  if (rsrq == 2683662) {
     return "-";
   }
   String rating;

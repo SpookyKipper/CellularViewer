@@ -165,9 +165,11 @@ class _HomePageState extends State<HomePage> {
                                   width: 35,
                                   height: 28,
                                 ),
-                                Text(_cellData != null
+                                Text(
+                                  _cellData != null
                                       ? _cellData!.nrCcBands.join(" + ")
-                                      : "Loading...",),
+                                      : "Loading...",
+                                ),
                               ],
                             ),
                         ],
@@ -193,9 +195,14 @@ class _HomePageState extends State<HomePage> {
                                     width: 35,
                                     height: 35,
                                   ),
-                                  Text(imsStatus != null
-                                      ? imsStatus!.replaceFirst("VoWiFi", "Wi-Fi Calling")
-                                      : "No IMS info"),
+                                  Text(
+                                    imsStatus != null
+                                        ? imsStatus!.replaceFirst(
+                                            "VoWiFi",
+                                            "Wi-Fi Calling",
+                                          )
+                                        : "No IMS info",
+                                  ),
                                 ],
                               ),
                             ],
@@ -245,31 +252,48 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Text(
                                     getSinrDisplay(
-                                      _cellData != null ? _cellData!.sinr : 0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    _cellData != null &&
-                                            _cellData!.networkType == "4G"
-                                        ? "RSRQ"
-                                        : "SS RSRQ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    getRsrqDisplay(
-                                      _cellData != null ? _cellData!.rsrq : 0,
+                                      _cellData != null ? _cellData!.sinr : 2683662,
                                     ),
                                   ),
                                 ],
                               ),
                               if (_cellData != null &&
-                                  _cellData!.networkType == "4G")
+                                  _cellData!.networkType != "4G")
+                                Column(
+                                  children: [
+                                    Text("SS RSRQ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      getRsrqDisplay(
+                                        _cellData != null ? _cellData!.rsrq : 2683662,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          if (_cellData != null &&
+                              _cellData!.networkType == "4G")
+                            Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    Text("RSRQ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      getRsrqDisplay(
+                                        _cellData != null ? _cellData!.rsrq : 2683662,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
                                 Column(
                                   children: [
                                     Text(
@@ -284,8 +308,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                            ],
-                          ),
+                              ],
+                            ),
                         ],
                       ),
                       // SizedBox(height: 10),

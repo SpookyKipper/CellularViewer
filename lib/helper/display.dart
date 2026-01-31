@@ -79,6 +79,8 @@ String getImsIcon(String? imsStatus) {
   }
 
   switch (imsStatus) {
+    case 'No Voice or CSFB':
+      return 'assets/images/NetworkIcons/CSFB.png';
     case 'VoLTE':
       return 'assets/images/NetworkIcons/VoLTE.png';
     case 'VoNR':

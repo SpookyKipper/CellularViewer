@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         setState(() => imsStatus = null);
         return;
       }
-      log("IMS Info: $imsInfo");
+      // log("IMS Info: $imsInfo");
       setState(() => imsStatus = imsInfo);
     } catch (e) {
       setState(() => imsStatus = "Error fetching IMS info: $e");
@@ -252,7 +252,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Text(
                                     getSinrDisplay(
-                                      _cellData != null ? _cellData!.sinr : 2683662,
+                                      _cellData != null
+                                          ? _cellData!.sinr
+                                          : 2683662,
                                     ),
                                   ),
                                 ],
@@ -261,14 +263,17 @@ class _HomePageState extends State<HomePage> {
                                   _cellData!.networkType != "4G")
                                 Column(
                                   children: [
-                                    Text("SS RSRQ",
+                                    Text(
+                                      "SS RSRQ",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       getRsrqDisplay(
-                                        _cellData != null ? _cellData!.rsrq : 2683662,
+                                        _cellData != null
+                                            ? _cellData!.rsrq
+                                            : 2683662,
                                       ),
                                     ),
                                   ],
@@ -278,17 +283,21 @@ class _HomePageState extends State<HomePage> {
                           if (_cellData != null &&
                               _cellData!.networkType == "4G")
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Column(
                                   children: [
-                                    Text("RSRQ",
+                                    Text(
+                                      "RSRQ",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       getRsrqDisplay(
-                                        _cellData != null ? _cellData!.rsrq : 2683662,
+                                        _cellData != null
+                                            ? _cellData!.rsrq
+                                            : 2683662,
                                       ),
                                     ),
                                   ],

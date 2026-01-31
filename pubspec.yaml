@@ -18,7 +18,10 @@ dependencies:
   package_info_plus: ^9.0.0
   dynamic_color: ^1.8.1
   dynamik_theme: ^0.1.5
-    # can be found at https://github.com/SpookyKipper/one_ui_flutter/
+  flutter_cell_info:
+    path: /home/kipper/Documents/GitKraken/flutter_cell_info
+  permission_handler: ^12.0.1
+    # can be found at https://github.com/SpookyKipper/flutter_cell_info/
     # you can use this for local dev, but please change back to the path above when contributing
 
 dev_dependencies:

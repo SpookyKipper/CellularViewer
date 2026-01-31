@@ -1,8 +1,75 @@
+import 'dart:async';
+
+import 'package:cellular_viewer/helper/display.dart';
+import 'package:cellular_viewer/helper/netinfo.dart';
+import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/spookyservices.dart';
 import 'package:spookyservices/widgets/widgets.dart';
+import 'dart:developer';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Timer for 1.25s updates
+  Timer? _timer;
+
+  CellData? _cellData;
+
+  String _statusMessage = "Initializing...";
+
+  @override
+  void initState() {
+    super.initState();
+    _initPermissionsAndTimer();
+  }
+
+  Future<void> _initPermissionsAndTimer() async {
+    // 1. Request Permissions
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.phone,
+    ].request();
+
+    if (statuses[Permission.location]!.isGranted &&
+        statuses[Permission.phone]!.isGranted) {
+      // 2. Start Loop
+      _timer = Timer.periodic(const Duration(milliseconds: 1250), (timer) {
+        _fetchNetworkInfo();
+      });
+    } else {
+      setState(() => _statusMessage = "Permissions Denied");
+    }
+  }
+
+  Future<void> _fetchNetworkInfo() async {
+    try {
+      // 1. Get raw cell list from the plugin
+      CellData cells = await getCellInfo();
+
+      // 2. Process data manually
+      // _processCells(cells);
+      // print("Cells");
+      log(cells.toString());
+      setState(() {
+        _cellData = cells;
+        _statusMessage = cells.toString();
+      });
+    } catch (e) {
+      setState(() => _statusMessage = "Error: $e");
+    }
+
+    // } on PlatformException catch (e) {
+    //   setState(() => _statusMessage = "Error: ${e.message}");
+    // } catch (e) {
+    //   setState(() => _statusMessage = "Error: $e");
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Brightness: ${Theme.of(context).brightness}");
@@ -35,20 +102,15 @@ class HomePage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            'assets/images/NetworkIcons/5GNSA.png',
+                            getNetworkIcon(_cellData),
                             width: 100,
                             height: 100,
                           ),
                           Image.asset(
-                            'assets/images/NetworkIcons/5GPlus_With_4GPlus.png',
-                            width: 100,
-                            height: 100,
+                            'assets/images/NetworkIcons/VoNR.png',
+                            width: 80,
+                            height: 80,
                           ),
-                          Image.asset(  
-                                'assets/images/NetworkIcons/VoNR.png',
-                                width: 80,
-                                height: 80,
-                              ),
                         ],
                       ),
                       Text("Connected to 5G NSA Network with 4G&5G CA"),
@@ -62,29 +124,34 @@ class HomePage extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/NetworkIcons/4GPlus.png',
-                                width: 35,
-                                height: 28,
-                              ),
-                              Text("900, 1800, 2600"),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/NetworkIcons/5G.png',
-                                width: 35,
-                                height: 28,
-                              ),
-                              Text("700, 2100, 3500, 4900"),
-                            ],
-                          ),
-                          
+                          if (_cellData != null && _cellData!.lteCcCount >= 1)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  getNetworkIcon4G(_cellData),
+                                  width: 35,
+                                  height: 28,
+                                ),
+                                Text(
+                                  _cellData != null
+                                      ? _cellData!.lteCcBands.join(" + ")
+                                      : "Loading...",
+                                ),
+                              ],
+                            ),
+                          if (_cellData != null && _cellData!.nrCcCount >= 1)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  getNetworkIcon4G(_cellData),
+                                  width: 35,
+                                  height: 28,
+                                ),
+                                Text("700, 2100, 3500, 4900"),
+                              ],
+                            ),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -100,7 +167,7 @@ class HomePage extends StatelessWidget {
                                   fontSize: 16,
                                 ),
                               ),
-                              Image.asset(  
+                              Image.asset(
                                 'assets/images/NetworkIcons/VoLTE.png',
                                 width: 35,
                                 height: 35,
@@ -118,7 +185,9 @@ class HomePage extends StatelessWidget {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(7.0),
-                                child: Text("1 (78m)"),
+                                child: Text(
+                                  _cellData != null ? _cellData!.ta : "-",
+                                ),
                               ),
                             ],
                           ),
@@ -144,22 +213,46 @@ class HomePage extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text("-95 dBm (Good)"),
+                                  Text(
+                                    getRsrpDisplay(
+                                      _cellData != null ? _cellData!.rsrp : 0,
+                                    ),
+                                  ),
                                 ],
                               ),
                               Column(
                                 children: [
                                   Text(
-                                    "SINR",
+                                    _cellData != null &&
+                                            _cellData!.networkType == "4G"
+                                        ? "SNR"
+                                        : "SINR",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text("20 dB (Excellent)"),
+                                  Text(
+                                    getSinrDisplay(
+                                      _cellData != null ? _cellData!.sinr : 0,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Column(
+                        children: [
+                          Text(
+                            "Debug",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(_statusMessage),
                         ],
                       ),
                       SizedBox(height: 13),

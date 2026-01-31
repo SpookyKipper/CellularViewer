@@ -46,3 +46,6 @@ app.*.map.json
 
 /android/app/apksignkey.jks
 /android/app/key.properties
+
+
+data/

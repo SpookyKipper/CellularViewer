@@ -124,8 +124,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Image.asset(
                             getImsIcon(imsStatus),
-                            width: 80,
-                            height: 80,
+                            width: 70,
+                            height: 70,
                           ),
                         ],
                       ),
@@ -192,8 +192,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Image.asset(
                                     getImsIcon(imsStatus),
-                                    width: 35,
-                                    height: 35,
+                                    width: 30,
+                                    height: 30,
                                   ),
                                   Text(
                                     imsStatus != null

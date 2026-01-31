@@ -1,6 +1,6 @@
 name: cellular_viewer
 description: "View cellular network information on your device and make your own status bar!"
-publish_to: 'none'
+publish_to: "none"
 version: 0.0.1+1
 
 environment:
@@ -20,9 +20,9 @@ dependencies:
   dynamik_theme: ^0.1.5
   flutter_cell_info:
     path: /home/kipper/Documents/GitKraken/flutter_cell_info
-  permission_handler: ^12.0.1
     # can be found at https://github.com/SpookyKipper/flutter_cell_info/
     # you can use this for local dev, but please change back to the path above when contributing
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +59,3 @@ flutter:
     - assets/images/NetworkIcons/VoWiFi.png
     - assets/images/NetworkIcons/NoVoice.png
     - assets/images/NetworkIcons/CSFB.png
-
-
-
-

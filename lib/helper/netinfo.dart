@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cellular_viewer/helper/bandCalc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
+import 'package:flutter_cell_info/status/rrc.dart';
 
 class CellData {
   final String networkType; // 3G/4G/NSA/SA
@@ -14,6 +15,7 @@ class CellData {
   final double rsrq;
   final double sinr; // or SNR for 4G
   final String ta; // 4G only
+  final int rrcStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
 
   CellData({
     required this.networkType,
@@ -25,6 +27,7 @@ class CellData {
     required this.sinr,
     required this.rsrq,
     this.ta = '-',
+    required this.rrcStatus,
   });
 
   @override
@@ -46,12 +49,28 @@ Future<CellData> getCellInfo() async {
     }
 
     List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
+
+    final String rrcStatus = await RrcService.getRrcStatus();
+    if (rrcStatus.isEmpty) {
+      return Future.error("RRC status is empty");
+    }
+    int rrc;
+    if (rrcStatus == 'RRC_IDLE_OR_DISCONNECTED') {
+      rrc = 0;
+    } else if (rrcStatus == 'RRC_CONNECTING') {
+      rrc = 1;
+    } else if (rrcStatus == 'RRC_CONNECTED') {
+      rrc = 2;
+    } else {
+      rrc = -1;
+    }
+
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
-      return processLteCellInfo(parsedCellInfo);
+      return processLteCellInfo(parsedCellInfo, rrc);
     } else if (type == 'NR') {
-      return processNrCellInfo(parsedCellInfo);
+      return processNrCellInfo(parsedCellInfo, rrc);
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -61,7 +80,7 @@ Future<CellData> getCellInfo() async {
   return Future.error("Failed to fetch cell info");
 }
 
-CellData processLteCellInfo(Map<String, dynamic> data) {
+CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
   // log(cellDataList.toString());
@@ -74,11 +93,17 @@ CellData processLteCellInfo(Map<String, dynamic> data) {
   String ta =
       "${cellDataList['signalLTE']['timingAdvance']} (${cellDataList['signalLTE']['timingAdvance'] * 78} m)";
 
-  List<dynamic> secondaryCellList = data['neighboringCellList'];
   List<Map<String, String>> lteCaBands = []; // e.g. [{NAME, EARFCN}, ...]
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, ARFCN}, ...]
 
   // Collect LTE CA bands from secondary cells
+  List<dynamic> secondaryCellList;
+  if (rrcStatus == 0) {
+    // If RRC is IDLE, no CA bands are available, no NSA bands either
+    secondaryCellList = [];
+  } else {
+    secondaryCellList = data['neighboringCellList'];
+  }
   secondaryCellList.forEach((cell) {
     if (cell['type'] == 'LTE') {
       final cellData = cell['lte'];
@@ -92,7 +117,8 @@ CellData processLteCellInfo(Map<String, dynamic> data) {
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR') { // Collect NR NSA CA bands from secondary cells
+    } else if (cell['type'] == 'NR') {
+      // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
       if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
@@ -108,13 +134,11 @@ CellData processLteCellInfo(Map<String, dynamic> data) {
     }
   });
 
-
   final List<String> lteCcBands = lteCaBands.map((e) => e['NAME']!).toList();
   lteCcBands.insert(0, bandName);
   final List<String> lteCCBandsClean = lteCcBands
       .toSet()
       .toList(); // Remove duplicates
-
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   final List<String> nrCcBandsClean = nrCcBands
@@ -131,12 +155,11 @@ CellData processLteCellInfo(Map<String, dynamic> data) {
     sinr: snr,
     rsrq: rsrq,
     ta: ta,
+    rrcStatus: rrcStatus,
   );
 }
 
-
-
-CellData processNrCellInfo(Map<String, dynamic> data) {
+CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
   // log(cellDataList.toString());
@@ -146,8 +169,16 @@ CellData processNrCellInfo(Map<String, dynamic> data) {
   double rsrq = cellDataList['signalNR']['ssRsrq'].toDouble();
   double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
 
-  List<dynamic> secondaryCellList = data['neighboringCellList'];
+  
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
+
+  List<dynamic> secondaryCellList;
+  if (rrcStatus == 0) {
+    // If RRC is IDLE, no CA bands are available, no NSA bands either
+    secondaryCellList = [];
+  } else {
+    secondaryCellList = data['neighboringCellList'];
+  }
   secondaryCellList.forEach((cell) {
     if (cell['type'] == 'NR') {
       final cellData = cell['nr'];
@@ -176,5 +207,6 @@ CellData processNrCellInfo(Map<String, dynamic> data) {
     rsrp: rsrp,
     sinr: sinr,
     rsrq: rsrq,
+    rrcStatus: rrcStatus,
   );
 }

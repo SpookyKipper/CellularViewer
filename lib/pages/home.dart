@@ -114,6 +114,25 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Column(
                     children: [
+                      if (_cellData == null ||
+                          _cellData!.rrcStatus == 0)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimary, // Color must be inside BoxDecoration
+                          borderRadius: BorderRadius.circular(
+                            20,
+                          ), // Apply rounded corners
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
+                          child: Text(
+                            "Data service is IDLE or DISCONNECTED\nInfo may be inaccurate.",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -129,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      Text("Connected to 5G NSA Network with 4G&5G CA"),
+                      Text("[placeholder]"),
                       SizedBox(height: 20),
                       Column(
                         children: [

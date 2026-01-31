@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
       // 2. Process data manually
       // _processCells(cells);
       // print("Cells");
-      log(cells.toString());
+      // log(cells.toString());
       setState(() {
         _cellData = cells;
         _statusMessage = cells.toString();
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Brightness: ${Theme.of(context).brightness}");
+    // print("Brightness: ${Theme.of(context).brightness}");
     if (Theme.of(context).brightness == Brightness.dark) {
       setDarkMode(true); //for spookyservices
     } else {

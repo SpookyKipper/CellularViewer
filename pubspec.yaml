@@ -57,6 +57,7 @@ flutter:
     - assets/images/NetworkIcons/VoLTE.png
     - assets/images/NetworkIcons/VoNR.png
     - assets/images/NetworkIcons/VoWiFi.png
+    - assets/images/NetworkIcons/NoVoice.png
 
 
 

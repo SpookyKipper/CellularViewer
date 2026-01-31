@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cellular_viewer/helper/display.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
+import 'package:flutter_cell_info/ims/info.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/spookyservices.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   Timer? _timer;
 
   CellData? _cellData;
+  String? imsStatus;
 
   String _statusMessage = "Initializing...";
 
@@ -40,9 +42,24 @@ class _HomePageState extends State<HomePage> {
       // 2. Start Loop
       _timer = Timer.periodic(const Duration(milliseconds: 1250), (timer) {
         _fetchNetworkInfo();
+        _fetchImsStatus();
       });
     } else {
       setState(() => _statusMessage = "Permissions Denied");
+    }
+  }
+
+  Future<void> _fetchImsStatus() async {
+    try {
+      String imsInfo = await ImsService.getNetworkType();
+      if (imsInfo == "PERMISSION_DENIED") {
+        setState(() => imsStatus = null);
+        return;
+      }
+      log("IMS Info: $imsInfo");
+      setState(() => imsStatus = imsInfo);
+    } catch (e) {
+      setState(() => imsStatus = "Error fetching IMS info: $e");
     }
   }
 
@@ -107,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                             height: 100,
                           ),
                           Image.asset(
-                            'assets/images/NetworkIcons/VoNR.png',
+                            getImsIcon(imsStatus),
                             width: 80,
                             height: 80,
                           ),
@@ -169,10 +186,18 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: 16,
                                 ),
                               ),
-                              Image.asset(
-                                'assets/images/NetworkIcons/VoLTE.png',
-                                width: 35,
-                                height: 35,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    getImsIcon(imsStatus),
+                                    width: 35,
+                                    height: 35,
+                                  ),
+                                  Text(imsStatus != null
+                                      ? imsStatus!
+                                      : "No IMS info"),
+                                ],
                               ),
                             ],
                           ),

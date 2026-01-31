@@ -73,6 +73,27 @@ String getNetworkIcon5G(CellData? cellData) {
   return 'assets/images/icon.png';
 }
 
+String getImsIcon(String? imsStatus) {
+  if (imsStatus == null) {
+    return 'assets/images/icon.png';
+  }
+
+  switch (imsStatus) {
+    case 'VoLTE':
+      return 'assets/images/NetworkIcons/VoLTE.png';
+    case 'VoNR':
+      return 'assets/images/NetworkIcons/VoNR.png';
+    case 'VoWiFi':
+      return 'assets/images/NetworkIcons/VoWiFi.png';
+    case '3G':
+      return 'assets/images/NetworkIcons/3G.png';
+    case '2G':
+      return 'assets/images/NetworkIcons/2G.png';
+    default:
+      return 'assets/images/icon.png';
+  }
+}
+
 String getRsrpDisplay(double rsrp) {
   if (rsrp == 0) {
     return "-";

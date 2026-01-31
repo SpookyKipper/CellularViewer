@@ -288,19 +288,19 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Column(
-                        children: [
-                          Text(
-                            "Debug",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(_statusMessage),
-                        ],
-                      ),
+                      // SizedBox(height: 10),
+                      // Column(
+                      //   children: [
+                      //     Text(
+                      //       "Debug",
+                      //       style: TextStyle(
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 16,
+                      //       ),
+                      //     ),
+                      //     Text(_statusMessage),
+                      //   ],
+                      // ),
                       SizedBox(height: 13),
                     ],
                   ),

@@ -4,7 +4,6 @@ import 'package:cellular_viewer/helper/display.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:flutter_cell_info/ims/info.dart';
-import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/spookyservices.dart';
 import 'package:spookyservices/widgets/widgets.dart';
@@ -195,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                                     height: 35,
                                   ),
                                   Text(imsStatus != null
-                                      ? imsStatus!
+                                      ? imsStatus!.replaceFirst("VoWiFi", "Wi-Fi Calling")
                                       : "No IMS info"),
                                 ],
                               ),

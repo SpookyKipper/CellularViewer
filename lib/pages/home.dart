@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
                           child: Text(
-                            "Data service is IDLE or DISCONNECTED\nInfo may be inaccurate.",
+                            "Data service is DISCONNECTED\nInfo may be inaccurate.",
                             textAlign: TextAlign.center,
                           ),
                         ),

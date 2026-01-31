@@ -3,10 +3,9 @@ import 'dart:developer';
 
 import 'package:cellular_viewer/helper/bandCalc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
-import 'package:flutter_cell_info/status/rrc.dart';
 
 class CellData {
-  final String networkType; // 3G/4G/NSA/SA
+  final String networkType; // 3G/4G/SA
   final int lteCcCount;
   final List<String> lteCcBands; // e.g. 700, 2600
   final int nrCcCount;

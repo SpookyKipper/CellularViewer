@@ -5,6 +5,7 @@ import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:flutter_cell_info/ims/info.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:spookyservices/functions/theme.dart';
 import 'package:spookyservices/spookyservices.dart';
 import 'package:spookyservices/widgets/widgets.dart';
 import 'dart:developer';
@@ -91,6 +92,11 @@ class _HomePageState extends State<HomePage> {
     // print("Brightness: ${Theme.of(context).brightness}");
     if (Theme.of(context).brightness == Brightness.dark) {
       setDarkMode(true); //for spookyservices
+      // Theme.of( context).copyWith(
+      //   colorScheme: Theme.of(context).colorScheme.copyWith(
+      //     brightness: Brightness.light,
+      //   ),
+      // );
     } else {
       setDarkMode(false); //for spookyservices
     }
@@ -101,6 +107,38 @@ class _HomePageState extends State<HomePage> {
           body: ListView(
             physics: const ClampingScrollPhysics(),
             children: [
+              if (_cellData == null || _cellData!.rrcStatus == 0)
+                Padding(
+                  padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: cLD(Theme.of(context)
+                          .colorScheme
+                          .primaryContainer, Theme.of(context)
+                          .colorScheme
+                          .onPrimary), // Color must be inside BoxDecoration
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ), // Apply rounded corners
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 50,
+                        right: 50,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Text(
+                        "Data service is DISCONNECTED\nInfo may be inaccurate.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Container(
@@ -114,25 +152,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Column(
                     children: [
-                      if (_cellData == null ||
-                          _cellData!.rrcStatus == 0)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimary, // Color must be inside BoxDecoration
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ), // Apply rounded corners
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 50, right: 50, top: 10, bottom: 10),
-                          child: Text(
-                            "Data service is DISCONNECTED\nInfo may be inaccurate.",
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -340,6 +359,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                         ],
                       ),
+                      // SizedBox(height: 10),
+                      // Column(
+                      //   children: [
+                      //     Text(
+                      //       "Detailed Network Type",
+                      //       style: TextStyle(
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 16,
+                      //       ),
+                      //     ),
+                      //     Text(_cellData != null
+                      //         ? _cellData!.detailedNetworkType
+                      //         : "Loading..."),
+                      //   ],
+                      // ),
                       // SizedBox(height: 10),
                       // Column(
                       //   children: [

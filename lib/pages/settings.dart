@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide AppBar;
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spookyservices/widgets/widgets.dart';
 
@@ -29,6 +30,13 @@ class SettingsPage extends StatelessWidget {
             
                     applicationLegalese: "© Spooky Services",
                   );
+                },
+              ),
+              SizedBox(width: 20),
+              Button(
+                text: "Go to Debug Page",
+                onPressed: () async {
+                  context.push('/debug');  
                 },
               ),
             ],

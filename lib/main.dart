@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cellular_viewer/pages/debug.dart';
 import 'package:dynamik_theme/dynamik_theme.dart';
 import 'package:cellular_viewer/pages/home.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ final Map<String, ShellConfig> routeConfig = {
     ],
   ),
   '/settings': ShellConfig(title: "Settings", icon: Icons.settings),
+  '/debug': ShellConfig(title: "Debug", icon: Icons.bug_report),
 };
 
 final router = GoRouter(
@@ -55,6 +57,14 @@ final router = GoRouter(
             routeConfig: routeConfig,
             child: SettingsPage(),
           ),
+        ),GoRoute(
+          path: '/debug',
+          pageBuilder: (context, state) => buildPageWithTransition(
+            context: context,
+            state: state,
+            routeConfig: routeConfig,
+            child: DebugPage(),
+          ),
         ),
       ],
     ),
@@ -81,7 +91,7 @@ class MyApp extends StatelessWidget {
         // You can also generate color schemes from:
         // https://m3.material.io/theme-builder#/custom
         lightScheme: theme.MaterialTheme.lightScheme(),
-        darkScheme: theme.MaterialTheme.darkScheme(),
+        darkScheme: theme.MaterialTheme.lightScheme(),
         defaultThemeState: ThemeState(
           themeMode: ThemeMode.system,
           colorMode: ColorMode.custom,

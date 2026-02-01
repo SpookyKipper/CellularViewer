@@ -5,7 +5,8 @@ import 'package:cellular_viewer/helper/bandCalc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 
 class CellData {
-  final String networkType; // 3G/4G/SA
+  final String networkType; // 3G/4G/SAc
+  // final String detailedNetworkType; // e.g. 2G/3G/LTE/LTE-NRANCHOR/LTE-A/LTE-A-NRARCHOR/NR-NSA/NR-NSA-CA/NR-SA/NR-SA-CA
   final int lteCcCount;
   final List<String> lteCcBands; // e.g. 700, 2600
   final int nrCcCount;
@@ -18,6 +19,7 @@ class CellData {
 
   CellData({
     required this.networkType,
+    // required this.detailedNetworkType,
     this.lteCcCount = 0,
     this.lteCcBands = const [],
     this.nrCcCount = 0,
@@ -31,7 +33,7 @@ class CellData {
 
   @override
   String toString() {
-    return 'CellInfo(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, sinr: $sinr, ta: $ta)';
+    return 'CellData(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, sinr: $sinr, ta: $ta)';
   }
 }
 
@@ -49,16 +51,17 @@ Future<CellData> getCellInfo() async {
 
     List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
 
+    // final String detailedNetworkType = await CellService.getDetailedNetworkType();
     final String rrcStatus = await RrcService.getRrcStatus();
     if (rrcStatus.isEmpty) {
-      return Future.error("RRC status is empty");
+      return Future.error("DATA status is empty");
     }
     int rrc;
-    if (rrcStatus == 'RRC_IDLE_OR_DISCONNECTED') {
+    if (rrcStatus == 'DATA_DISCONNECTED') {
       rrc = 0;
-    } else if (rrcStatus == 'RRC_CONNECTING') {
+    } else if (rrcStatus == 'DATA_CONNECTING') {
       rrc = 1;
-    } else if (rrcStatus == 'RRC_CONNECTED') {
+    } else if (rrcStatus == 'DATA_CONNECTED') {
       rrc = 2;
     } else {
       rrc = -1;
@@ -67,9 +70,9 @@ Future<CellData> getCellInfo() async {
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
-      return processLteCellInfo(parsedCellInfo, rrc);
+      return processLteCellInfo(parsedCellInfo, rrc, "a");
     } else if (type == 'NR') {
-      return processNrCellInfo(parsedCellInfo, rrc);
+      return processNrCellInfo(parsedCellInfo, rrc, "a");
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -79,7 +82,7 @@ Future<CellData> getCellInfo() async {
   return Future.error("Failed to fetch cell info");
 }
 
-CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus) {
+CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus, String? detailedNetworkType) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
   // log(cellDataList.toString());
@@ -87,7 +90,6 @@ CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus) {
   String bandName = cellDataList['bandLTE']['name'];
   double rsrp = cellDataList['signalLTE']['rsrp'].toDouble();
   double rsrq = cellDataList['signalLTE']['rsrq'].toDouble();
-  double rssi = cellDataList['signalLTE']['rssi'].toDouble();
   double snr = cellDataList['signalLTE']['snr'].toDouble();
   String ta =
       "${cellDataList['signalLTE']['timingAdvance']} (${cellDataList['signalLTE']['timingAdvance'] * 78} m)";
@@ -155,10 +157,11 @@ CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus) {
     rsrq: rsrq,
     ta: ta,
     rrcStatus: rrcStatus,
+    // detailedNetworkType: detailedNetworkType,
   );
 }
 
-CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus) {
+CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus, String detailedNetworkType) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
   // log(cellDataList.toString());
@@ -207,5 +210,7 @@ CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus) {
     sinr: sinr,
     rsrq: rsrq,
     rrcStatus: rrcStatus,
+    // detailedNetworkType: detailedNetworkType,
   );
 }
+

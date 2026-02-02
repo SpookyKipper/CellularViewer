@@ -239,7 +239,9 @@ CellData processLteCellInfo(
   }
 
   int nrCcCount = nrCcBands.length;
-  if (nrCcCount == 1 && lteCcBands.length >= 2) {
+  if ((nrCcCount == 0 || nrCcCount == 1) &&
+      lteCcBands.length >= 2 && // LTECC >=2 means RRC Connected and CA can be reliably detected
+      maxNrCcCount > 0) { // Heuristic for NR NSA without reported NR CCs
     nrCcCount = maxNrCcCount;
   }
   return CellData(

@@ -188,7 +188,7 @@ CellData processLteCellInfo(
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR' && (nrCaBands.length + 1) < maxCcCount - lteCaBands.length - 1) { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
+    } else if (cell['type'] == 'NR' && (nrCaBands.length + 1) <= maxCcCount - lteCaBands.length - 1) { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
@@ -276,7 +276,7 @@ CellData processNrCellInfo(
     secondaryCellList = data['neighboringCellList'];
   }
   for (var cell in secondaryCellList) {
-    if (cell['type'] == 'NR' && (nrCaBands.length + 1) < maxCcCount) {
+    if (cell['type'] == 'NR' && (nrCaBands.length + 1) <= maxCcCount - 1) { // minus 1 for main band
       final cellData = cell['nr'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
           cpu !=

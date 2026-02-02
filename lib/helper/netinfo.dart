@@ -74,11 +74,19 @@ Future<CellData> getCellInfo() async {
     }
 
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
+
+    bool usingCa = await ServiceStateService.searchServiceState("isUsingCarrierAggregation=true");
+    // if (!usingCa) {
+    //   log("Carrier Aggregation not in use, skipping CA band processing.");
+    // } else {
+    //   log("Carrier Aggregation in use, processing CA bands.");
+    // }
+
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
-      return processLteCellInfo(parsedCellInfo, rrc, "a");
+      return processLteCellInfo(parsedCellInfo, rrc, "a", usingCa);
     } else if (type == 'NR') {
-      return processNrCellInfo(parsedCellInfo, rrc, "a");
+      return processNrCellInfo(parsedCellInfo, rrc, "a", usingCa);
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -92,6 +100,7 @@ CellData processLteCellInfo(
   Map<String, dynamic> data,
   int rrcStatus,
   String? detailedNetworkType,
+  bool usingCa,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
@@ -118,15 +127,15 @@ CellData processLteCellInfo(
   } else {
     secondaryCellList = data['neighboringCellList'];
   }
-  secondaryCellList.forEach((cell) {
-    if (cell['type'] == 'LTE') {
+  for (var cell in secondaryCellList) {
+    if (usingCa && cell['type'] == 'LTE') { // Collect LTE CA bands from secondary cells, no need to check if CA is not used by ServiceState
       final cellData = cell['lte'];
-      if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) continue;
       if (lteCaBands.contains({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       }))
-        return;
+        continue;
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
@@ -135,12 +144,12 @@ CellData processLteCellInfo(
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
-      if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) continue;
       if (nrCaBands.contains({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
-        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+        'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       }))
-        return;
+        continue;
       if (nsaRsrp == 2683662) {
         nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();
       }
@@ -152,10 +161,10 @@ CellData processLteCellInfo(
       }
       nrCaBands.add({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
-        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+        'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       });
     }
-  });
+  }
 
   final List<String> lteCcBands = lteCaBands.map((e) => e['NAME']!).toList();
   lteCcBands.insert(0, bandName);
@@ -191,6 +200,7 @@ CellData processNrCellInfo(
   Map<String, dynamic> data,
   int rrcStatus,
   String detailedNetworkType,
+  bool usingCa,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -204,27 +214,27 @@ CellData processNrCellInfo(
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
 
   List<dynamic> secondaryCellList;
-  if (rrcStatus == 0) {
+  if (rrcStatus == 0 && usingCa == false) {
     // If RRC is IDLE, no CA bands are available, no NSA bands either
     secondaryCellList = [];
   } else {
     secondaryCellList = data['neighboringCellList'];
   }
-  secondaryCellList.forEach((cell) {
+  for (var cell in secondaryCellList) {
     if (cell['type'] == 'NR') {
       final cellData = cell['nr'];
-      if (!cellData['connectionStatus'].contains('SecondaryConnection')) return;
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) continue;
       if (nrCaBands.contains({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
-        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+        'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       }))
-        return;
+        continue;
       nrCaBands.add({
         'NAME': getNrBandName(cellDataList['bandNR']['downlinkFrequency']),
-        'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
+        'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       });
     }
-  });
+  }
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.insert(0, bandName);

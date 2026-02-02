@@ -100,16 +100,23 @@ Build Number: ${info.buildNumber}
 
 ''';
 
+    final bool usingCa = await ServiceStateService.searchServiceState("isUsingCarrierAggregation=true");
+
+
     final String? cellInfo = await getCellInfo();
     final String rrcStatus = await RrcService.getRrcStatus();
     final String imsStatus = await ImsServiceDebug.getNetworkType();
 
     debugValue +=
-        '''Cell Info: ${cellInfo ?? "N/A"}
+        '''DATA Status: $rrcStatus
 
 ============================================
 
-DATA Status: $rrcStatus
+Using Carrier Aggregation: ${usingCa ? "YES" : "NO"}
+
+============================================
+
+Cell Info: ${cellInfo ?? "N/A"}
 
 ============================================
 

@@ -176,7 +176,7 @@ String getNrBandName(int frequency) {
     }
   }
 
-  return bestMatch?.name ?? '';
+  return bestMatch?.name ?? '???';
 }
 
 class _Band {

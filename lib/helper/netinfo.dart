@@ -157,14 +157,14 @@ CellData processLteCellInfo(
   double nsaSinr = 2683662;
 
   // Collect LTE CA bands from secondary cells
-  List<dynamic> secondaryCellList;
-  if (dataConnStatus == 0) {
-    // If RRC is IDLE, no CA bands are available, no NSA bands either
-    secondaryCellList = [];
-  } else {
-    secondaryCellList = data['neighboringCellList'];
-  }
-
+  List<dynamic> secondaryCellList = data['neighboringCellList'];
+;
+  // if (dataConnStatus == 0) {
+  //   // If RRC is IDLE, no CA bands are available, no NSA bands either
+  //   secondaryCellList = [];
+  // } else {
+  //   secondaryCellList = data['neighboringCellList'];
+  // }
   final int maxCcCount = bandwidths.length;
 
   for (var cell in secondaryCellList) {
@@ -295,13 +295,14 @@ CellData processNrCellInfo(
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
   final int maxCcCount = bandwidths.length;
 
-  List<dynamic> secondaryCellList;
-  if (dataConnStatus == 0 && usingCa == false) {
-    // If RRC is IDLE, no CA bands are available, no NSA bands either
-    secondaryCellList = [];
-  } else {
-    secondaryCellList = data['neighboringCellList'];
-  }
+  List<dynamic> secondaryCellList = data['neighboringCellList'];
+;
+  // if (dataConnStatus == 0 && usingCa == false) {
+  //   // If RRC is IDLE, no CA bands are available, no NSA bands either
+  //   secondaryCellList = [];
+  // } else {
+  //   secondaryCellList = data['neighboringCellList'];
+  // }
   for (var cell in secondaryCellList) {
     if (cell['type'] == 'NR') { // minus 1 for main band
       final cellData = cell['nr'];

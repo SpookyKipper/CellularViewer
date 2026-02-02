@@ -83,9 +83,9 @@ Future<CellData> getCellInfo() async {
     // }
 
     String type = cellDataList[0]['type'];
-    if (type == 'LTE') {
+    if (type == 'LTE') { // 4G or 4G + 5G NSA
       return processLteCellInfo(parsedCellInfo, rrc, "a", usingCa);
-    } else if (type == 'NR') {
+    } else if (type == 'NR') { // 5G SA
       return processNrCellInfo(parsedCellInfo, rrc, "a", usingCa);
     } else {
       return Future.error("Unsupported cell type: $type");

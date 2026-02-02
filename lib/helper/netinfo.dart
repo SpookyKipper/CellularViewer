@@ -238,11 +238,10 @@ CellData processLteCellInfo(
     nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
   }
 
-  final int nrCcCount = nrCcBands.length < maxCcCount - lteCcBands.length &&
-          nrCcBands.length ==
-              1 // Unable to get NRCA, use value as calculated one from BW List
-      ? maxCcCount - lteCcBands.length
-      : nrCcBands.length;
+  int nrCcCount = nrCcBands.length;
+  if (nrCcCount == 1 && lteCcBands.length >= 2) {
+    nrCcCount = maxNrCcCount;
+  }
   return CellData(
     networkType: "4G",
     lteCcCount: lteCcBands.length,

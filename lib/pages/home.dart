@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           body: ListView(
             physics: const ClampingScrollPhysics(),
             children: [
-              if (_cellData == null || _cellData!.rrcStatus == 0)
+              if (_cellData == null || _cellData!.dataConnStatus == 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
                   child: Container(

@@ -113,7 +113,7 @@ Widget getRsrpDisplay(double rsrp) {
   } else if (rsrp < -75) {  // -80 to -75 dBm
     color = Colors.greenAccent;
   } else { // > -75 dBm
-    color = Colors.blueAccent;
+    color = const Color.fromARGB(255, 110, 209, 255);
   }
   final String displayText = "${rsrp.toInt()} dBm";
   return Text(displayText, style: TextStyle(color: color,));
@@ -137,7 +137,7 @@ Widget getSinrDisplay(double sinr) {
   } else if (sinr < 26) { // 20 to 26 dB
     color = Colors.greenAccent;
   } else { // > 26 dB
-    color = Colors.blueAccent;
+    color = const Color.fromARGB(255, 110, 209, 255);
   }
   return Text("${sinr.toInt()} dB", style: TextStyle(color: color));   
 }
@@ -153,12 +153,12 @@ Widget getRsrqDisplay(double rsrq) {
     color = Colors.orange;
   } else if (rsrq < -15) { // -19 to -15 dB
     color = Colors.yellow;
-  } else if (rsrq < -10) { // -15 to -10 dB
+  } else if (rsrq < -11) { // -15 to -11 dB
     color = Colors.lightGreen;
-  } else if (rsrq < -8) { // -10 to -8 dB
+  } else if (rsrq < -9) { // -11 to -9 dB
     color = Colors.greenAccent;
   } else { // > -8 dB
-    color = Colors.lightBlueAccent;
+    color = const Color.fromARGB(255, 110, 209, 255);
   }
   return Text("${rsrq.toInt()} dB", style: TextStyle(color: color));
 }
@@ -179,7 +179,7 @@ Widget getTaDisplay(double ta) {
   } else if (ta > 4) {  // 8 to 4
     color = Colors.greenAccent;
   } else { // <= 4
-    color = Colors.lightBlueAccent;
+    color = const Color.fromARGB(255, 110, 209, 255);
   }
   return Text("${ta.toInt()} (${ta.toInt() * 78} m)", style: TextStyle(color: color));
 }

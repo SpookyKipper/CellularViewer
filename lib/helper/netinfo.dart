@@ -4,6 +4,14 @@ import 'dart:developer';
 import 'package:cellular_viewer/helper/bandCalc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 
+///////////////////////////////////////////////////////////
+//////////////// NOTE ON CONSTANT 2683662 /////////////////
+/// This constant value (2683662) is used to represent
+/// unavailable or invalid signal metrics in the
+/// FlutterCellInfo plugin. If a signal metric (like RSRP,
+/// RSRQ, SINR) returns this value, it indicates that the
+/// information is not available from the device.
+///////////////////////////////////////////////////////////
 class CellData {
   final String networkType; // 3G/4G/SAc
   // final String detailedNetworkType; // e.g. 2G/3G/LTE/LTE-NRANCHOR/LTE-A/LTE-A-NRARCHOR/NR-NSA/NR-NSA-CA/NR-SA/NR-SA-CA

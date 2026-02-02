@@ -19,10 +19,11 @@ class SettingsPage extends StatelessWidget {
                 onPressed: () async {
                   final info = await PackageInfo.fromPlatform();
                   final _buildNumber = info.buildNumber;
+                  final _version = info.version;
                   showLicensePage(
                     context: context,
                     applicationName: 'HKJC Updater',
-                    applicationVersion: _buildNumber,
+                    applicationVersion: "$_version ($_buildNumber)",
                     applicationIcon: ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: 100),
                       child: Image.asset("assets/images/icon.png"),

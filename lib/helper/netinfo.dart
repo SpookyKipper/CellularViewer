@@ -76,15 +76,15 @@ Future<CellData> getCellInfo() async {
     if (dataConnStatus.isEmpty) {
       return Future.error("DATA status is empty");
     }
-    int rrc;
+    int data;
     if (dataConnStatus == 'DATA_DISCONNECTED') {
-      rrc = 0;
+      data = 0;
     } else if (dataConnStatus == 'DATA_CONNECTING') {
-      rrc = 1;
+      data = 1;
     } else if (dataConnStatus == 'DATA_CONNECTED') {
-      rrc = 2;
+      data = 2;
     } else {
-      rrc = -1;
+      data = -1;
     }
 
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
@@ -98,13 +98,29 @@ Future<CellData> getCellInfo() async {
     //   log("Carrier Aggregation in use, processing CA bands.");
     // }
 
+    final List<double> bandwidths = await ServiceStateService.getBandwidths();
+
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
       // 4G or 4G + 5G NSA
-      return processLteCellInfo(parsedCellInfo, rrc, "a", usingCa, cpu);
+      return processLteCellInfo(
+        parsedCellInfo,
+        data,
+        "a",
+        usingCa,
+        cpu,
+        bandwidths,
+      );
     } else if (type == 'NR') {
       // 5G SA
-      return processNrCellInfo(parsedCellInfo, rrc, "a", usingCa, cpu);
+      return processNrCellInfo(
+        parsedCellInfo,
+        data,
+        "a",
+        usingCa,
+        cpu,
+        bandwidths,
+      );
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -120,6 +136,7 @@ CellData processLteCellInfo(
   String? detailedNetworkType,
   bool usingCa,
   String cpu,
+  List<double> bandwidths,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
@@ -146,11 +163,21 @@ CellData processLteCellInfo(
   } else {
     secondaryCellList = data['neighboringCellList'];
   }
+
+  final int maxCcCount = bandwidths.length;
+
   for (var cell in secondaryCellList) {
-    if (usingCa && cell['type'] == 'LTE') {
+    if (usingCa && cell['type'] == 'LTE' && (lteCaBands.length + 1) < maxCcCount) {
+
+      if (bandwidths[1 + lteCaBands.length] > 20 ) { // 1 (Main Band) + n (already collected CA bands) + 1 (this one) - 1(List starts from 0)
+        // LTE Bands can't be > 20 MHz, probably NR band
+        continue;
+      }
       // Collect LTE CA bands from secondary cells, no need to check if CA is not used by ServiceState
       final cellData = cell['lte'];
-      if (!cellData['connectionStatus'].contains('SecondaryConnection') && cpu != 'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
+      if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
+          cpu !=
+              'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
       if (lteCaBands.contains({
         'NAME': cellData['bandLTE']['name'],
@@ -161,7 +188,7 @@ CellData processLteCellInfo(
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR') {
+    } else if (cell['type'] == 'NR' && (nrCaBands.length + 1) < maxCcCount - lteCaBands.length - 1) { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
@@ -199,11 +226,14 @@ CellData processLteCellInfo(
       .where((e) => e.isNotEmpty)
       .toSet()
       .toList(); // Remove duplicates
+  final int nrCcCount = nrCcBandsClean.length < maxCcCount - lteCCBandsClean.length && nrCcBandsClean.length == 1 // Unable to get NRCA, use value as calculated one from BW List
+      ? maxCcCount - lteCCBandsClean.length
+      : nrCcBandsClean.length;
   return CellData(
     networkType: "4G",
     lteCcCount: lteCCBandsClean.length,
     lteCcBands: lteCCBandsClean,
-    nrCcCount: nrCcBandsClean.length,
+    nrCcCount: nrCcCount,
     nrCcBands: nrCcBandsClean,
     rsrp: rsrp,
     sinr: snr,
@@ -224,6 +254,7 @@ CellData processNrCellInfo(
   String detailedNetworkType,
   bool usingCa,
   String cpu,
+  List<double> bandwidths,  
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -235,6 +266,7 @@ CellData processNrCellInfo(
   double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
 
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
+  final int maxCcCount = bandwidths.length;
 
   List<dynamic> secondaryCellList;
   if (dataConnStatus == 0 && usingCa == false) {
@@ -244,9 +276,11 @@ CellData processNrCellInfo(
     secondaryCellList = data['neighboringCellList'];
   }
   for (var cell in secondaryCellList) {
-    if (cell['type'] == 'NR') {
+    if (cell['type'] == 'NR' && (nrCaBands.length + 1) < maxCcCount) {
       final cellData = cell['nr'];
-      if (!cellData['connectionStatus'].contains('SecondaryConnection') && cpu != 'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
+      if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
+          cpu !=
+              'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
       if (nrCaBands.contains({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),

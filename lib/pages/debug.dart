@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:clipboard/clipboard.dart';
@@ -74,7 +75,7 @@ Timer? _timer;
     }
   }
 
-  Future<String> getCellInfo() async {
+  Future<String> getCellRawInfo() async {
     try {
       String? cellInfo = await CellInfo.getCellInfo;
       if (cellInfo == null) return Future.error("No cell info available");
@@ -103,12 +104,15 @@ Build Number: ${info.buildNumber}
     final bool usingCa = await ServiceStateService.searchServiceState("isUsingCarrierAggregation=true");
 
 
-    final String? cellInfo = await getCellInfo();
-    final String rrcStatus = await RrcService.getRrcStatus();
+    final String cellRawInfo = await getCellRawInfo();
+    final CellData cellInfo = await getCellInfo();
+    final String dataStatus = await RrcService.getRrcStatus();
     final String imsStatus = await ImsServiceDebug.getNetworkType();
+    final List<double> bandwidths = await ServiceStateService.getBandwidths();
+    final String rrcStatus = cellInfo.lteCcCount > 1 ? "Connected" : cellInfo.lteCcCount == bandwidths.length ? "Connected no CA" : "Idle";
 
     debugValue +=
-        '''DATA Status: $rrcStatus
+        '''DATA Status: $dataStatus
 
 ============================================
 
@@ -116,7 +120,20 @@ Using Carrier Aggregation: ${usingCa ? "YES" : "NO"}
 
 ============================================
 
-Cell Info: ${cellInfo ?? "N/A"}
+Bandwidth Info: 
+${bandwidths.toString()}
+${bandwidths.length} total bands
+
+LTE CC Count: ${cellInfo.lteCcCount}
+RRC State (Guess): $rrcStatus
+NR CC Count (From Raw Cell Info): ${cellInfo.nrCcCount}
+
+BW - LTE CC Count: ${bandwidths.length - cellInfo.lteCcCount}
+NR CC Count (Calculated from BW Info): ${rrcStatus.contains("Connected") ? (bandwidths.length - cellInfo.lteCcCount) : 0}
+
+============================================
+
+Cell Info: ${cellRawInfo ?? "N/A"}
 
 ============================================
 

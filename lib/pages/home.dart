@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Text(
                                   _cellData != null
-                                      ? _cellData!.lteCcBands.join(" + ")
+                                      ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
                                       : "Loading...",
                                 ),
                               ],
@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Text(
                                   _cellData != null
-                                      ? _cellData!.nrCcBands.join(" + ")
+                                      ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"
                                       : "Loading...",
                                 ),
                               ],

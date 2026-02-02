@@ -268,22 +268,26 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   getRsrpDisplay(
-                                      _cellData != null ? _cellData!.rsrp : 0,
+                                    _cellData != null ? _cellData!.rsrp : 0,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    _cellData != null &&
+                                            _cellData!.networkType == "4G"
+                                        ? "RSRQ"
+                                        : "SS RSRQ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  if (_cellData != null &&
-                                      _cellData!.networkType == "4G") ...[
-                                    Text(
-                                      "RSRQ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    getRsrqDisplay(
-                                        _cellData != null
-                                            ? _cellData!.rsrq
-                                            : 2683662,
-                                      ),
-                                  ],
+                                  ),
+                                  getRsrqDisplay(
+                                    _cellData != null
+                                        ? _cellData!.rsrq
+                                        : 2683662,
+                                  ),
                                 ],
                               ),
                               Column(
@@ -298,12 +302,16 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   getSinrDisplay(
-                                      _cellData != null
-                                          ? _cellData!.sinr
-                                          : 2683662,
-                                    ),
-                                  if (_cellData != null &&
-                                      _cellData!.networkType == "4G") ...[
+                                    _cellData != null
+                                        ? _cellData!.sinr
+                                        : 2683662,
+                                  ),
+                                ],
+                              ),
+                              if (_cellData != null &&
+                                  _cellData!.networkType == "4G")
+                                Column(
+                                  children: [
                                     Text(
                                       "TA",
                                       style: TextStyle(
@@ -311,10 +319,13 @@ class _HomePageState extends State<HomePage> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    getTaDisplay(_cellData != null ? _cellData!.ta : 2683662),
+                                    getTaDisplay(
+                                      _cellData != null
+                                          ? _cellData!.ta
+                                          : 2683662,
+                                    ),
                                   ],
-                                ],
-                              ),
+                                ),
                               if (_cellData != null &&
                                   _cellData!.networkType != "4G")
                                 Column(
@@ -326,10 +337,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     getRsrqDisplay(
-                                        _cellData != null
-                                            ? _cellData!.rsrq
-                                            : 2683662,
-                                      ),
+                                      _cellData != null
+                                          ? _cellData!.rsrq
+                                          : 2683662,
+                                    ),
                                   ],
                                 ),
                             ],
@@ -357,8 +368,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     getRsrpDisplay(
-                                        _cellData != null ? _cellData!.nsaRsrp : 0,
-                                      ),
+                                      _cellData != null
+                                          ? _cellData!.nsaRsrp
+                                          : 0,
+                                    ),
                                   ],
                                 ),
 
@@ -371,10 +384,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     getRsrqDisplay(
-                                        _cellData != null
-                                            ? _cellData!.nsaRsrq
-                                            : 2683662,
-                                      ),
+                                      _cellData != null
+                                          ? _cellData!.nsaRsrq
+                                          : 2683662,
+                                    ),
                                   ],
                                 ),
 
@@ -387,10 +400,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     getSinrDisplay(
-                                        _cellData != null
-                                            ? _cellData!.nsaSinr
-                                            : 2683662,
-                                      ),
+                                      _cellData != null
+                                          ? _cellData!.nsaSinr
+                                          : 2683662,
+                                    ),
                                   ],
                                 ),
                               ],

@@ -14,7 +14,10 @@ class CellData {
   final double rsrp;
   final double rsrq;
   final double sinr; // or SNR for 4G
-  final String ta; // 4G only
+  final double nsaRsrp;
+  final double nsaRsrq;
+  final double nsaSinr;
+  final double ta; // 4G only
   final int rrcStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
 
   CellData({
@@ -27,7 +30,10 @@ class CellData {
     required this.rsrp,
     required this.sinr,
     required this.rsrq,
-    this.ta = '-',
+    this.ta = 2683662,
+    this.nsaRsrp = 2683662,
+    this.nsaRsrq = 2683662,
+    this.nsaSinr = 2683662,
     required this.rrcStatus,
   });
 
@@ -82,7 +88,11 @@ Future<CellData> getCellInfo() async {
   return Future.error("Failed to fetch cell info");
 }
 
-CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus, String? detailedNetworkType) {
+CellData processLteCellInfo(
+  Map<String, dynamic> data,
+  int rrcStatus,
+  String? detailedNetworkType,
+) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
   // log(cellDataList.toString());
@@ -91,11 +101,14 @@ CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus, String? de
   double rsrp = cellDataList['signalLTE']['rsrp'].toDouble();
   double rsrq = cellDataList['signalLTE']['rsrq'].toDouble();
   double snr = cellDataList['signalLTE']['snr'].toDouble();
-  String ta =
-      "${cellDataList['signalLTE']['timingAdvance']} (${cellDataList['signalLTE']['timingAdvance'] * 78} m)";
+  double ta = cellDataList['signalLTE']['timingAdvance'].toDouble();
 
   List<Map<String, String>> lteCaBands = []; // e.g. [{NAME, EARFCN}, ...]
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, ARFCN}, ...]
+
+  double nsaRsrp = 2683662;
+  double nsaRsrq = 2683662;
+  double nsaSinr = 2683662;
 
   // Collect LTE CA bands from secondary cells
   List<dynamic> secondaryCellList;
@@ -128,6 +141,15 @@ CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus, String? de
         'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       }))
         return;
+      if (nsaRsrp == 2683662) {
+        nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();
+      }
+      if (nsaRsrq == 2683662) {
+        nsaRsrq = cellData['signalNR']['ssRsrq'].toDouble();
+      }
+      if (nsaSinr == 2683662) {
+        nsaSinr = cellData['signalNR']['ssSinr'].toDouble();
+      }
       nrCaBands.add({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
         'EARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
@@ -155,13 +177,21 @@ CellData processLteCellInfo(Map<String, dynamic> data, int rrcStatus, String? de
     rsrp: rsrp,
     sinr: snr,
     rsrq: rsrq,
+    nsaRsrp: nsaRsrp,
+    nsaRsrq: nsaRsrq,
+    nsaSinr: nsaSinr,
     ta: ta,
     rrcStatus: rrcStatus,
+
     // detailedNetworkType: detailedNetworkType,
   );
 }
 
-CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus, String detailedNetworkType) {
+CellData processNrCellInfo(
+  Map<String, dynamic> data,
+  int rrcStatus,
+  String detailedNetworkType,
+) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
   // log(cellDataList.toString());
@@ -171,7 +201,6 @@ CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus, String deta
   double rsrq = cellDataList['signalNR']['ssRsrq'].toDouble();
   double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
 
-  
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
 
   List<dynamic> secondaryCellList;
@@ -213,4 +242,3 @@ CellData processNrCellInfo(Map<String, dynamic> data, int rrcStatus, String deta
     // detailedNetworkType: detailedNetworkType,
   );
 }
-

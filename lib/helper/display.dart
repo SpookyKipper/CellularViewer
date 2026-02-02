@@ -1,4 +1,5 @@
 import 'package:cellular_viewer/helper/netinfo.dart';
+import 'package:spookyservices/widgets/widgets.dart';
 
 String getNetworkIcon(CellData? cellData) {
   if (cellData == null) {
@@ -96,65 +97,89 @@ String getImsIcon(String? imsStatus) {
   }
 }
 
-String getRsrpDisplay(double rsrp) {
+Widget getRsrpDisplay(double rsrp) {
   if (rsrp == 2683662) {
-    return "-";
+    return Text("-", style: TextStyle(color: Colors.grey,));
   }
-  String rating;
-  if (rsrp < -140) {
-    rating = "Very Poor";
-  } else if (rsrp < -120) {
-    rating = "Poor";
-  } else if (rsrp < -100) {
-    rating = "Fair";
-  } else if (rsrp < -80) {
-    rating = "Good";
-  } else if (rsrp < -60) {
-    rating = "Excellent";
-  } else {
-    rating = "Outstanding";
+  Color color;
+  if (rsrp < -115) { // < -115 dBm
+    color = Colors.red;
+  } else if (rsrp < -105) { // -115 to -105 dBm
+    color = Colors.orange;
+  } else if (rsrp < -90) { // -105 to -90 dBm
+    color = Colors.yellow;
+  } else if (rsrp < -80) { // -90 to -80 dBm
+    color = Colors.lightGreen;
+  } else if (rsrp < -75) {  // -80 to -75 dBm
+    color = Colors.greenAccent;
+  } else { // > -75 dBm
+    color = Colors.blueAccent;
   }
-  return "${rsrp.toInt()} dBm ($rating)";
+  final String displayText = "${rsrp.toInt()} dBm";
+  return Text(displayText, style: TextStyle(color: color,));
 }
 
-String getSinrDisplay(double sinr) {
+Widget getSinrDisplay(double sinr) {
   if (sinr == 2683662) {
-    return "-";
+    return Text("-", style: TextStyle(color: Colors.grey,));
   }
-  String rating;
-  if (sinr < 0) {
-    rating = "Very Poor";
-  } else if (sinr < 5) {
-    rating = "Poor";
-  } else if (sinr < 10) {
-    rating = "Fair";
-  } else if (sinr < 15) {
-    rating = "Good";
-  } else if (sinr < 20) {
-    rating = "Excellent";
-  } else {
-    rating = "Outstanding";
+  Color color;
+  if (sinr < -15) { // < -15 dB
+    color = Colors.red;
+  } else if (sinr < -5) { // -15 to -5 dB
+    color = Colors.deepOrange;
+  } else if (sinr < 0) { // -5 to 0 dB
+    color = Colors.orange;
+  } else if (sinr < 13) { // 0 to 13 dB
+    color = Colors.yellow;
+  } else if (sinr < 20) { // 13 to 20 dB
+    color = Colors.lightGreen;
+  } else if (sinr < 26) { // 20 to 26 dB
+    color = Colors.greenAccent;
+  } else { // > 26 dB
+    color = Colors.blueAccent;
   }
-  return "${sinr.toInt()} dB ($rating)";
+  return Text("${sinr.toInt()} dB", style: TextStyle(color: color));   
 }
 
-String getRsrqDisplay(double rsrq) {
+Widget getRsrqDisplay(double rsrq) {
   if (rsrq == 2683662) {
-    return "-";
+    return Text("-", style: TextStyle(color: Colors.grey,));
   }
-  String rating;
-  if (rsrq < -20) {
-    rating = "Very Poor";
-  } else if (rsrq < -15) {
-    rating = "Poor";
-  } else if (rsrq < -10) {
-    rating = "Fair";
-  } else if (rsrq < -5) {
-    rating = "Good";
-  } else if (rsrq < 0) {
-    rating = "Excellent";
-  } else {
-    rating = "Outstanding";
+  Color color;
+  if (rsrq < -25) { // < -25 dB
+    color = Colors.red;
+  } else if (rsrq < -19) { // -25 to -19 dB
+    color = Colors.orange;
+  } else if (rsrq < -15) { // -19 to -15 dB
+    color = Colors.yellow;
+  } else if (rsrq < -10) { // -15 to -10 dB
+    color = Colors.lightGreen;
+  } else if (rsrq < -8) { // -10 to -8 dB
+    color = Colors.greenAccent;
+  } else { // > -8 dB
+    color = Colors.lightBlueAccent;
   }
-  return "${rsrq.toInt()} dB ($rating)";
+  return Text("${rsrq.toInt()} dB", style: TextStyle(color: color));
+}
+
+Widget getTaDisplay(double ta) {
+  if (ta == 2683662) {
+    return Text("-", style: TextStyle(color: Colors.grey,));
+  }
+  Color color;
+  if (ta > 192) { // > 192 
+    color = Colors.red;
+  } else if (ta > 65) { // 193 to 65
+    color = Colors.orange;
+  } else if (ta > 26) {  // 66 to 26
+    color = Colors.yellow;
+  } else if (ta > 7) {  // 27 to 7
+    color = Colors.lightGreen;
+  } else if (ta > 4) {  // 8 to 4
+    color = Colors.greenAccent;
+  } else { // <= 4
+    color = Colors.lightBlueAccent;
+  }
+  return Text("${ta.toInt()} (${ta.toInt() * 78} m)", style: TextStyle(color: color));
 }

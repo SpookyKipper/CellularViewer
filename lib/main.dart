@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
         // You can also generate color schemes from:
         // https://m3.material.io/theme-builder#/custom
         lightScheme: theme.MaterialTheme.lightScheme(),
-        darkScheme: theme.MaterialTheme.lightScheme(),
+        darkScheme: theme.MaterialTheme.darkScheme(),
         defaultThemeState: ThemeState(
           themeMode: ThemeMode.system,
           colorMode: ColorMode.custom,

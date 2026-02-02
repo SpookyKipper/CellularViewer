@@ -112,11 +112,10 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: cLD(Theme.of(context)
-                          .colorScheme
-                          .primaryContainer, Theme.of(context)
-                          .colorScheme
-                          .onPrimary), // Color must be inside BoxDecoration
+                      color: cLD(
+                        Theme.of(context).colorScheme.primaryContainer,
+                        Theme.of(context).colorScheme.onPrimary,
+                      ), // Color must be inside BoxDecoration
                       borderRadius: BorderRadius.circular(
                         20,
                       ), // Apply rounded corners
@@ -131,10 +130,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text(
                         "Data service is DISCONNECTED\nInfo may be inaccurate.",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),
@@ -212,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -247,6 +243,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+                      SizedBox(height: 5),
                       Column(
                         children: [
                           Text(
@@ -270,11 +267,23 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(
-                                    getRsrpDisplay(
+                                  getRsrpDisplay(
                                       _cellData != null ? _cellData!.rsrp : 0,
                                     ),
-                                  ),
+                                  if (_cellData != null &&
+                                      _cellData!.networkType == "4G") ...[
+                                    Text(
+                                      "RSRQ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    getRsrqDisplay(
+                                        _cellData != null
+                                            ? _cellData!.rsrq
+                                            : 2683662,
+                                      ),
+                                  ],
                                 ],
                               ),
                               Column(
@@ -288,13 +297,22 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(
-                                    getSinrDisplay(
+                                  getSinrDisplay(
                                       _cellData != null
                                           ? _cellData!.sinr
                                           : 2683662,
                                     ),
-                                  ),
+                                  if (_cellData != null &&
+                                      _cellData!.networkType == "4G") ...[
+                                    Text(
+                                      "TA",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    getTaDisplay(_cellData != null ? _cellData!.ta : 2683662),
+                                  ],
                                 ],
                               ),
                               if (_cellData != null &&
@@ -307,56 +325,77 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      getRsrqDisplay(
+                                    getRsrqDisplay(
                                         _cellData != null
                                             ? _cellData!.rsrq
                                             : 2683662,
                                       ),
-                                    ),
                                   ],
                                 ),
                             ],
                           ),
                           if (_cellData != null &&
-                              _cellData!.networkType == "4G")
+                              _cellData!.networkType == "4G" &&
+                              _cellData!.nrCcCount >= 1) ...[
+                            SizedBox(height: 5),
+                            Text(
+                              "NSA Signal Strength",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Column(
                                   children: [
                                     Text(
-                                      "RSRQ",
+                                      "SS RSRP",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      getRsrqDisplay(
-                                        _cellData != null
-                                            ? _cellData!.rsrq
-                                            : 2683662,
+                                    getRsrpDisplay(
+                                        _cellData != null ? _cellData!.nsaRsrp : 0,
                                       ),
-                                    ),
                                   ],
                                 ),
 
                                 Column(
                                   children: [
                                     Text(
-                                      "TA",
+                                      "SS RSRQ",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16,
                                       ),
                                     ),
+                                    getRsrqDisplay(
+                                        _cellData != null
+                                            ? _cellData!.nsaRsrq
+                                            : 2683662,
+                                      ),
+                                  ],
+                                ),
+
+                                Column(
+                                  children: [
                                     Text(
-                                      _cellData != null ? _cellData!.ta : "-",
+                                      "SS SINR",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
+                                    getSinrDisplay(
+                                        _cellData != null
+                                            ? _cellData!.nsaSinr
+                                            : 2683662,
+                                      ),
                                   ],
                                 ),
                               ],
                             ),
+                          ],
                         ],
                       ),
                       // SizedBox(height: 10),

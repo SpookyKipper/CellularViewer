@@ -9,7 +9,8 @@ This app allows you to view detailed 4G/5G cellular network information on your 
 - Signal strength metrics (RSRP, RSRQ, SINR, TA - 4G only) with color-coded indicators
 - Debug mode to view raw data from the device
 
-## Tested devices
+## Tested Systems
+
 - Modern Exynos Modem devices under LTE/NSA/SA with Carrier Aggregation (Samsung A56 5G) - Heavily tested
 - 4G Qualcomm Modem devices (Sony Xperia XZ) - Lightly tested
 - 5G Qualcomm Modem devices under LTE/NSA (Samsung S23+) - Very lightly tested by friend

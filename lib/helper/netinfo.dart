@@ -143,6 +143,7 @@ CellData processLteCellInfo(
   // log(cellDataList.toString());
 
   String bandName = cellDataList['bandLTE']['name'];
+  String primaryEarfcn = cellDataList['bandLTE']['downlinkEarfcn'].toString();
   double rsrp = cellDataList['signalLTE']['rsrp'].toDouble();
   double rsrq = cellDataList['signalLTE']['rsrq'].toDouble();
   double snr = cellDataList['signalLTE']['snr'].toDouble();
@@ -175,16 +176,18 @@ CellData processLteCellInfo(
           cpu !=
               'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
+      if (cellData['bandLTE']['downlinkEarfcn'].toString() == primaryEarfcn)
+        continue;
       if (lteCaBands.contains({
         'NAME': cellData['bandLTE']['name'],
-        'EARFCN': cellData['bandLTE']['earfcn'].toString(),
+        'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
       }))
         continue;
 
       if (cellData['bandLTE']['name'] == "") continue; // Skip invalid bands (probably an NR  band)
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
-        'EARFCN': cellData['bandLTE']['earfcn'].toString(),
+        'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
       });
     } else if (cell['type'] == 'NR') { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
@@ -215,44 +218,37 @@ CellData processLteCellInfo(
 
   final List<String> lteCcBands = lteCaBands.map((e) => e['NAME']!).toList();
   lteCcBands.insert(0, bandName);
-  List<String> lteCCBandsClean = lteCcBands
-      .toSet()
-      .toList(); // Remove duplicates
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
-  List<String> nrCcBandsClean = nrCcBands
-      .where((e) => e.isNotEmpty)
-      .toSet()
-      .toList(); // Remove duplicates
+  nrCcBands.removeWhere((e) => e.isEmpty);
 
-
-  if (lteCCBandsClean.length > maxCcCount ) {
+  if (lteCcBands.length > maxCcCount) {
     // Sanity check, should not happen
     // log(
-    //     "Warning: LTE CC Count (${lteCCBandsClean.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
-    lteCCBandsClean.removeRange(maxCcCount, lteCCBandsClean.length);
+    //     "Warning: LTE CC Count (${lteCcBands.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
+    lteCcBands.removeRange(maxCcCount, lteCcBands.length);
   }
 
   final int maxNrCcCount =
-      maxCcCount - lteCCBandsClean.length; // Remaining CCs for NR
+      maxCcCount - lteCcBands.length; // Remaining CCs for NR
 
-  if (nrCcBandsClean.length > maxNrCcCount) {
+  if (nrCcBands.length > maxNrCcCount) {
     // log(
-    //     "Warning: NR CC Count (${nrCcBandsClean.length}) exceeds max NR CC Count ($maxNrCcCount). Truncating to max NR CC Count.");
-    nrCcBandsClean.removeRange(
-        maxNrCcCount, nrCcBandsClean.length);
+    //     "Warning: NR CC Count (${nrCcBands.length}) exceeds max NR CC Count ($maxNrCcCount). Truncating to max NR CC Count.");
+    nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
   }
 
-
-  final int nrCcCount = nrCcBandsClean.length < maxCcCount - lteCCBandsClean.length && nrCcBandsClean.length == 1 // Unable to get NRCA, use value as calculated one from BW List
-      ? maxCcCount - lteCCBandsClean.length
-      : nrCcBandsClean.length;
+  final int nrCcCount = nrCcBands.length < maxCcCount - lteCcBands.length &&
+          nrCcBands.length ==
+              1 // Unable to get NRCA, use value as calculated one from BW List
+      ? maxCcCount - lteCcBands.length
+      : nrCcBands.length;
   return CellData(
     networkType: "4G",
-    lteCcCount: lteCCBandsClean.length,
-    lteCcBands: lteCCBandsClean,
+    lteCcCount: lteCcBands.length,
+    lteCcBands: lteCcBands,
     nrCcCount: nrCcCount,
-    nrCcBands: nrCcBandsClean,
+    nrCcBands: nrCcBands,
     rsrp: rsrp,
     sinr: snr,
     rsrq: rsrq,
@@ -279,6 +275,7 @@ CellData processNrCellInfo(
   // log(cellDataList.toString());
 
   String bandName = getNrBandName(cellDataList['bandNR']['downlinkFrequency']);
+  String primaryArfcn = cellDataList['bandNR']['downlinkArfcn'].toString();
   double rsrp = cellDataList['signalNR']['ssRsrp'].toDouble();
   double rsrq = cellDataList['signalNR']['ssRsrq'].toDouble();
   double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
@@ -300,13 +297,15 @@ CellData processNrCellInfo(
           cpu !=
               'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
+      if (cellData['bandNR']['downlinkArfcn'].toString() == primaryArfcn)
+        continue;
       if (nrCaBands.contains({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
         'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       }))
         continue;
       nrCaBands.add({
-        'NAME': getNrBandName(cellDataList['bandNR']['downlinkFrequency']),
+        'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
         'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),
       });
     }
@@ -314,20 +313,17 @@ CellData processNrCellInfo(
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.insert(0, bandName);
-  List<String> nrCcBandsClean = nrCcBands
-      .toSet()
-      .toList(); // Remove duplicates
 
-  if (nrCcBandsClean.length > maxCcCount ) {
+  if (nrCcBands.length > maxCcCount) {
     // Sanity check, should not happen
     // log(
-    //     "Warning: NR CC Count (${nrCcBandsClean.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
-    nrCcBandsClean.removeRange(maxCcCount, nrCcBandsClean.length);
+    //     "Warning: NR CC Count (${nrCcBands.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
+    nrCcBands.removeRange(maxCcCount, nrCcBands.length);
   }
   return CellData(
     networkType: "SA",
-    nrCcCount: nrCcBandsClean.length,
-    nrCcBands: nrCcBandsClean,
+    nrCcCount: nrCcBands.length,
+    nrCcBands: nrCcBands,
     rsrp: rsrp,
     sinr: sinr,
     rsrq: rsrq,

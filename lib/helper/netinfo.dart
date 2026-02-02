@@ -215,7 +215,7 @@ CellData processLteCellInfo(
 
   final List<String> lteCcBands = lteCaBands.map((e) => e['NAME']!).toList();
   lteCcBands.insert(0, bandName);
-  final List<String> lteCCBandsClean = lteCcBands
+  List<String> lteCCBandsClean = lteCcBands
       .toSet()
       .toList(); // Remove duplicates
 
@@ -294,7 +294,7 @@ CellData processNrCellInfo(
     secondaryCellList = data['neighboringCellList'];
   }
   for (var cell in secondaryCellList) {
-    if (cell['type'] == 'NR' && (nrCaBands.length + 1) <= maxCcCount - 1) { // minus 1 for main band
+    if (cell['type'] == 'NR') { // minus 1 for main band
       final cellData = cell['nr'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
           cpu !=
@@ -314,9 +314,16 @@ CellData processNrCellInfo(
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.insert(0, bandName);
-  final List<String> nrCcBandsClean = nrCcBands
+  List<String> nrCcBandsClean = nrCcBands
       .toSet()
       .toList(); // Remove duplicates
+
+  if (nrCcBandsClean.length > maxCcCount ) {
+    // Sanity check, should not happen
+    // log(
+    //     "Warning: NR CC Count (${nrCcBandsClean.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
+    nrCcBandsClean.removeRange(maxCcCount, nrCcBandsClean.length);
+  }
   return CellData(
     networkType: "SA",
     nrCcCount: nrCcBandsClean.length,

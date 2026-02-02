@@ -167,12 +167,8 @@ CellData processLteCellInfo(
   final int maxCcCount = bandwidths.length;
 
   for (var cell in secondaryCellList) {
-    if (usingCa && cell['type'] == 'LTE' && (lteCaBands.length + 1) < maxCcCount) {
+    if (usingCa && cell['type'] == 'LTE') {
 
-      if (bandwidths[1 + lteCaBands.length] > 20 ) { // 1 (Main Band) + n (already collected CA bands) + 1 (this one) - 1(List starts from 0)
-        // LTE Bands can't be > 20 MHz, probably NR band
-        continue;
-      }
       // Collect LTE CA bands from secondary cells, no need to check if CA is not used by ServiceState
       final cellData = cell['lte'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
@@ -184,11 +180,13 @@ CellData processLteCellInfo(
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       }))
         continue;
+
+      if (cellData['bandLTE']['name'] == "") continue; // Skip invalid bands (probably an NR  band)
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['earfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR' && (nrCaBands.length + 1) <= maxCcCount - lteCaBands.length - 1) { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
+    } else if (cell['type'] == 'NR') { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
@@ -222,10 +220,30 @@ CellData processLteCellInfo(
       .toList(); // Remove duplicates
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
-  final List<String> nrCcBandsClean = nrCcBands
+  List<String> nrCcBandsClean = nrCcBands
       .where((e) => e.isNotEmpty)
       .toSet()
       .toList(); // Remove duplicates
+
+
+  if (lteCCBandsClean.length > maxCcCount ) {
+    // Sanity check, should not happen
+    // log(
+    //     "Warning: LTE CC Count (${lteCCBandsClean.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
+    lteCCBandsClean.removeRange(maxCcCount, lteCCBandsClean.length);
+  }
+
+  final int maxNrCcCount =
+      maxCcCount - lteCCBandsClean.length; // Remaining CCs for NR
+
+  if (nrCcBandsClean.length > maxNrCcCount) {
+    // log(
+    //     "Warning: NR CC Count (${nrCcBandsClean.length}) exceeds max NR CC Count ($maxNrCcCount). Truncating to max NR CC Count.");
+    nrCcBandsClean.removeRange(
+        maxNrCcCount, nrCcBandsClean.length);
+  }
+
+
   final int nrCcCount = nrCcBandsClean.length < maxCcCount - lteCCBandsClean.length && nrCcBandsClean.length == 1 // Unable to get NRCA, use value as calculated one from BW List
       ? maxCcCount - lteCCBandsClean.length
       : nrCcBandsClean.length;

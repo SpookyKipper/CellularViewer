@@ -155,7 +155,7 @@ Widget getRsrqDisplay(double rsrq) {
     color = Colors.yellow;
   } else if (rsrq < -11) { // -15 to -11 dB
     color = Colors.lightGreen;
-  } else if (rsrq < -9) { // -11 to -9 dB
+  } else if (rsrq < -8) { // -11 to -8 dB
     color = Colors.greenAccent;
   } else { // > -8 dB
     color = const Color.fromARGB(255, 110, 209, 255);

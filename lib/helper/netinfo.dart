@@ -64,6 +64,9 @@ Future<CellData> getCellInfo() async {
     }
 
     List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
+
+    if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
+
     String cpu;
     if (cellDataList[0]["HARDWARE"] == "qcom") {
       cpu = "qcom";
@@ -87,8 +90,6 @@ Future<CellData> getCellInfo() async {
       data = -1;
     }
 
-    if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
-
     bool usingCa = await ServiceStateService.searchServiceState(
       "isUsingCarrierAggregation=true",
     );
@@ -106,7 +107,6 @@ Future<CellData> getCellInfo() async {
       return processLteCellInfo(
         parsedCellInfo,
         data,
-        "a",
         usingCa,
         cpu,
         bandwidths,
@@ -116,7 +116,6 @@ Future<CellData> getCellInfo() async {
       return processNrCellInfo(
         parsedCellInfo,
         data,
-        "a",
         usingCa,
         cpu,
         bandwidths,
@@ -133,7 +132,6 @@ Future<CellData> getCellInfo() async {
 CellData processLteCellInfo(
   Map<String, dynamic> data,
   int dataConnStatus,
-  String? detailedNetworkType,
   bool usingCa,
   String cpu,
   List<double> bandwidths,
@@ -197,7 +195,7 @@ CellData processLteCellInfo(
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR') {
+    } else if (cell['type'] == 'NR' && (usingCa || nrCaBands.isEmpty)) {
       // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
@@ -287,7 +285,6 @@ CellData processLteCellInfo(
 CellData processNrCellInfo(
   Map<String, dynamic> data,
   int dataConnStatus,
-  String detailedNetworkType,
   bool usingCa,
   String cpu,
   List<double> bandwidths,

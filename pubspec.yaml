@@ -27,39 +27,13 @@ dependencies:
   fluttertoast: ^9.0.0
 
 dev_dependencies:
-  flutter_test:
+  flutter_test: 
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/icon.png
-    - assets/images/NetworkIcons/2G.png
-    - assets/images/NetworkIcons/3G.png
-    - assets/images/NetworkIcons/4G.png
-    - assets/images/NetworkIcons/4G_NSAAnchor.png
-    - assets/images/NetworkIcons/4GPlus.png
-    - assets/images/NetworkIcons/4GPlus_NSAAnchor.png
-    - assets/images/NetworkIcons/5G.png
-    - assets/images/NetworkIcons/5GmmW.png
-    - assets/images/NetworkIcons/5GNSA.png
-    - assets/images/NetworkIcons/5GPlus.png
-    - assets/images/NetworkIcons/5GPlus_With_4GPlus.png
-    - assets/images/NetworkIcons/5GSA.png
-    - assets/images/NetworkIcons/5GPlusSA.png
-    - assets/images/NetworkIcons/5GPlusNSA.png
-    - assets/images/NetworkIcons/5GSub6.png
-    - assets/images/NetworkIcons/5G_With_4GPlus.png
-    - assets/images/NetworkIcons/5GNSA_With_4GPlus.png
-    - assets/images/NetworkIcons/5GPlusNSA_With_4GPlus.png
-    - assets/images/NetworkIcons/H.png
-    - assets/images/NetworkIcons/H+.png
-    - assets/images/NetworkIcons/LTE.png
-    - assets/images/NetworkIcons/LTE-A.png
-    - assets/images/NetworkIcons/Vo5G.png
-    - assets/images/NetworkIcons/VoLTE.png
-    - assets/images/NetworkIcons/VoNR.png
-    - assets/images/NetworkIcons/VoWiFi.png
-    - assets/images/NetworkIcons/NoVoice.png
-    - assets/images/NetworkIcons/CSFB.png
+    - assets/images/
+    - assets/images/NetworkIcons/

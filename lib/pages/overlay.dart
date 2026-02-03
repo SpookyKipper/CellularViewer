@@ -33,7 +33,7 @@ class OverlaySettingsPage extends StatelessWidget {
                   }
                   
                   
-                  await FlutterOverlayWindow.showOverlay(height: 50, enableDrag: true, alignment: OverlayAlignment.center, startPosition: OverlayPosition(0, 0));
+                  await FlutterOverlayWindow.showOverlay(height: 300, enableDrag: false, alignment: OverlayAlignment.topCenter, startPosition: OverlayPosition(0, 0));
                   // await FlutterOverlayWindow.resizeOverlay(20, 20, true);
                 },
               ),

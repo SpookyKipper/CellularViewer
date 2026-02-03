@@ -11,14 +11,74 @@ This app allows you to view detailed 4G/5G cellular network information on your 
 
 ## Tested Systems
 
-- Modern Exynos Modem devices under LTE/NSA/SA with Carrier Aggregation (Samsung A56 5G) - Heavily tested
-- 4G Qualcomm Modem devices (Sony Xperia XZ) - Lightly tested
-- 5G Qualcomm Modem devices under LTE/NSA (Samsung S23+) - Very lightly tested by friend
+<table border="1">
+  <tbody>
+    <tr>
+      <td><strong>Modem</strong></td>
+      <td><strong>Modern 5G Exynos</strong></td>
+      <td><strong>Modern 5G Qualcomm</strong></td>
+      <td><strong>Legacy 4G Qualcomm</strong></td>
+      <td><strong>MediaTek</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Test Device</strong></td>
+      <td><strong>Samsung A56 5G</strong></td>
+      <td><strong>Samsung S23+ (Friend)</strong></td>
+      <td><strong>Sony Xperia XZ</strong></td>
+      <td>---</td>
+    </tr>
+    <tr>
+      <td>4G LTE</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>LTE CA</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>5G NR (SA/NSA)</td>
+      <td>✅ Good</td>
+      <td>❗ No band info</td>
+      <td>---</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>NR CA (SA/NSA)</td>
+      <td colspan="2">❗ No band info, guess CC Count</td>
+      <!-- <td>❗ No band info, guess CC Count</td> -->
+      <td>---</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>IMS: VoWiFi</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>IMS: VoLTE</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>🆗 Limited Testing</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>IMS: VoNR</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+      <td>---</td>
+      <td>❓ Untested</td>
+    </tr>
+  </tbody>
+</table>
 
-#### Known limitations
-- ⚠️ All devices (incl. Exynos) support on NR Carrier Aggregation is limited.
-- ⚠️ Qualcomm devices support on Carrier Aggregation is limited.
-- ⚠️ MediaTek devices support are very limited.
 
 
 ## Installing Cellular Viewer

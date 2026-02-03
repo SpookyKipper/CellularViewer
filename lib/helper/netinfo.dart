@@ -210,6 +210,10 @@ CellData processLteCellInfo(
 
       if (nrCaBands.any((e) => e['NAME'] == nrName && e['ARFCN'] == nrArfcn))
         continue;
+      
+      if (nrName == "???" && nrCaBands.isNotEmpty)
+        continue; // ??? means invalid band if previous band can be detected correctly
+    
 
       if (nsaRsrp == 2683662) {
         nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();

@@ -38,7 +38,9 @@ flutter:
     - assets/images/NetworkIcons/2G.png
     - assets/images/NetworkIcons/3G.png
     - assets/images/NetworkIcons/4G.png
+    - assets/images/NetworkIcons/4G_NSAAnchor.png
     - assets/images/NetworkIcons/4GPlus.png
+    - assets/images/NetworkIcons/4GPlus_NSAAnchor.png
     - assets/images/NetworkIcons/5G.png
     - assets/images/NetworkIcons/5GmmW.png
     - assets/images/NetworkIcons/5GNSA.png

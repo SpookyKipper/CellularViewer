@@ -25,6 +25,7 @@ dependencies:
   permission_handler: ^12.0.1
   clipboard: ^3.0.14
   fluttertoast: ^9.0.0
+  flutter_overlay_window: ^0.5.0
 
 dev_dependencies:
   flutter_test: 

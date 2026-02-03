@@ -4,6 +4,7 @@ import 'package:cellular_viewer/helper/display.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:flutter_cell_info/ims/info.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/functions/theme.dart';
 import 'package:spookyservices/spookyservices.dart';
@@ -91,6 +92,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //  FlutterOverlayWindow.closeOverlay();
     // print("Brightness: ${Theme.of(context).brightness}");
     if (Theme.of(context).brightness == Brightness.dark) {
       setDarkMode(true); //for spookyservices

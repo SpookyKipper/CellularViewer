@@ -10,7 +10,7 @@ class SettingsPage extends StatelessWidget {
       physics: const ClampingScrollPhysics(),
       children: [
         Center(
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             
             children: [
@@ -33,11 +33,18 @@ class SettingsPage extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(width: 20),
+              SizedBox(height: 5),
               Button(
                 text: "Go to Debug Page",
                 onPressed: () async {
                   context.push('/debug');  
+                },
+              ),
+              SizedBox(height: 5),
+              Button(
+                text: "Configure Overlay Settings",
+                onPressed: () async {
+                  context.push('/overlay');  
                 },
               ),
             ],

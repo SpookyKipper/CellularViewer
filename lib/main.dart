@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:cellular_viewer/pages/debug.dart';
+import 'package:cellular_viewer/pages/overlay.dart';
 import 'package:dynamik_theme/dynamik_theme.dart';
 import 'package:cellular_viewer/pages/home.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +29,7 @@ final Map<String, ShellConfig> routeConfig = {
   ),
   '/settings': ShellConfig(title: "Settings", icon: Icons.settings),
   '/debug': ShellConfig(title: "Debug", icon: Icons.bug_report),
+  '/overlay': ShellConfig(title: "Overlay", icon: Icons.window),
 };
 
 final router = GoRouter(
@@ -57,7 +61,17 @@ final router = GoRouter(
             routeConfig: routeConfig,
             child: SettingsPage(),
           ),
-        ),GoRoute(
+        ),
+        GoRoute(
+          path: '/overlay',
+          pageBuilder: (context, state) => buildPageWithTransition(
+            context: context,
+            state: state,
+            routeConfig: routeConfig,
+            child: OverlaySettingsPage(),
+          ),
+        ),
+        GoRoute(
           path: '/debug',
           pageBuilder: (context, state) => buildPageWithTransition(
             context: context,
@@ -74,6 +88,39 @@ final router = GoRouter(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
+}
+
+// overlay entry point
+@pragma("vm:entry-point")
+void overlayMain() {
+  runApp(const OverlayApp());
+}
+
+class OverlayApp extends StatelessWidget {
+  const OverlayApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    log(MediaQuery.paddingOf(context).top.toString());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Material(
+        color: const Color.fromARGB(98, 0, 0, 0),
+        child: Padding(
+          padding: EdgeInsets.all(MediaQuery.paddingOf(context).top),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset("assets/images/NetworkIcons/4G.png", width: 100, height: 100),
+              Icon(Icons.signal_cellular_4_bar, color: Colors.white),
+              SizedBox(width: 5),
+              Text("Overlay Active", style: TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 bool isDarkMode(BuildContext context) {

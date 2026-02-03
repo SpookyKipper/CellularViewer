@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         _fetchImsStatus();
       });
     } else {
-      setState(() => _statusMessage = "Permissions Denied");
+      if (mounted) setState(() => _statusMessage = "Permissions Denied");
     }
   }
 
@@ -57,9 +57,9 @@ class _HomePageState extends State<HomePage> {
         return;
       }
       // log("IMS Info: $imsInfo");
-      setState(() => imsStatus = imsInfo);
+      if (mounted) setState(() => imsStatus = imsInfo);
     } catch (e) {
-      setState(() => imsStatus = "Error fetching IMS info: $e");
+      if (mounted) setState(() => imsStatus = "Error fetching IMS info: $e");
     }
   }
 
@@ -72,12 +72,14 @@ class _HomePageState extends State<HomePage> {
       // _processCells(cells);
       // print("Cells");
       // log(cells.toString());
-      setState(() {
-        _cellData = cells;
-        _statusMessage = cells.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _cellData = cells;
+          _statusMessage = cells.toString();
+        });
+      }
     } catch (e) {
-      setState(() => _statusMessage = "Error: $e");
+      if (mounted) setState(() => _statusMessage = "Error: $e");
     }
 
     // } on PlatformException catch (e) {
@@ -164,6 +166,20 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       Text("[placeholder]"),
+                      if (_cellData != null &&
+                          _cellData!.overrideNetworkType == "NR_NSA" &&
+                          _cellData!.nrCcCount == 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                "[NR NSA] Connected to a 4G anchor band.\nIt is 5G on display for marketing, but the actual 5G connection has not been established yet.",
+                              ),
+                            ),
+                          ],
+                        ),
                       SizedBox(height: 20),
                       Column(
                         children: [

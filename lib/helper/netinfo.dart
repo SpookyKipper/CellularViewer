@@ -158,18 +158,20 @@ CellData processLteCellInfo(
 
   // Collect LTE CA bands from secondary cells
   List<dynamic> secondaryCellList = data['neighboringCellList'];
-;
+  ;
   // if (dataConnStatus == 0) {
   //   // If RRC is IDLE, no CA bands are available, no NSA bands either
   //   secondaryCellList = [];
   // } else {
   //   secondaryCellList = data['neighboringCellList'];
   // }
-  final int maxCcCount = bandwidths.length;
+  int maxCcCount = bandwidths.length;
+  if (usingCa == true && maxCcCount < 2) {
+    maxCcCount = 999; // No limit if CA is used but bandwidth info is unreliable
+  }
 
   for (var cell in secondaryCellList) {
     if (usingCa && cell['type'] == 'LTE') {
-
       // Collect LTE CA bands from secondary cells, no need to check if CA is not used by ServiceState
       final cellData = cell['lte'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
@@ -182,17 +184,21 @@ CellData processLteCellInfo(
 
       // Check for duplicates in the collected list using explicit value comparison
       // (List.contains fails with non-const Map literals in Dart)
-      if (lteCaBands.any((e) =>
-          e['NAME'] == cellData['bandLTE']['name'] &&
-          e['EARFCN'] == cellData['bandLTE']['downlinkEarfcn'].toString()))
+      if (lteCaBands.any(
+        (e) =>
+            e['NAME'] == cellData['bandLTE']['name'] &&
+            e['EARFCN'] == cellData['bandLTE']['downlinkEarfcn'].toString(),
+      ))
         continue;
 
-      if (cellData['bandLTE']['name'] == "") continue; // Skip invalid bands (probably an NR  band)
+      if (cellData['bandLTE']['name'] == "")
+        continue; // Skip invalid bands (probably an NR  band)
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
       });
-    } else if (cell['type'] == 'NR') { // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
+    } else if (cell['type'] == 'NR') {
+      // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
@@ -214,10 +220,7 @@ CellData processLteCellInfo(
       if (nsaSinr == 2683662) {
         nsaSinr = cellData['signalNR']['ssSinr'].toDouble();
       }
-      nrCaBands.add({
-        'NAME': nrName,
-        'ARFCN': nrArfcn,
-      });
+      nrCaBands.add({'NAME': nrName, 'ARFCN': nrArfcn});
     }
   }
 
@@ -251,8 +254,11 @@ CellData processLteCellInfo(
   // This compensates for unreliable NR CA reporting in some APIs.
   // NRCCCount 0 or 1 means NRCA cannot be reliably detected
   if ((nrCcCount == 0 || nrCcCount == 1) &&
-      lteCcBands.length >= 2 && // LTECC >=2 means RRC Connected and CA can be reliably detected
-      maxNrCcCount > 0) { // Heuristic for NR NSA without reported NR CCs
+      lteCcBands.length >=
+          2 && // LTECC >=2 means RRC Connected and CA can be reliably detected
+      maxNrCcCount > 0 &&
+      maxNrCcCount < 100) { // avoid overflow from unreliable bandwidth info
+    // Heuristic for NR NSA without reported NR CCs
     nrCcCount = maxNrCcCount;
   }
   return CellData(
@@ -280,7 +286,7 @@ CellData processNrCellInfo(
   String detailedNetworkType,
   bool usingCa,
   String cpu,
-  List<double> bandwidths,  
+  List<double> bandwidths,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -296,7 +302,7 @@ CellData processNrCellInfo(
   final int maxCcCount = bandwidths.length;
 
   List<dynamic> secondaryCellList = data['neighboringCellList'];
-;
+  ;
   // if (dataConnStatus == 0 && usingCa == false) {
   //   // If RRC is IDLE, no CA bands are available, no NSA bands either
   //   secondaryCellList = [];
@@ -304,7 +310,8 @@ CellData processNrCellInfo(
   //   secondaryCellList = data['neighboringCellList'];
   // }
   for (var cell in secondaryCellList) {
-    if (cell['type'] == 'NR') { // minus 1 for main band
+    if (cell['type'] == 'NR') {
+      // minus 1 for main band
       final cellData = cell['nr'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
           cpu !=
@@ -312,13 +319,16 @@ CellData processNrCellInfo(
         continue;
       if (cellData['bandNR']['downlinkArfcn'].toString() == primaryArfcn)
         continue;
-      
+
       // Check for duplicates using explicit comparison (List.contains fails for Map literals)
-      if (nrCaBands.any((e) =>
-          e['NAME'] == getNrBandName(cellData['bandNR']['downlinkFrequency']) &&
-          e['ARFCN'] == cellData['bandNR']['downlinkArfcn'].toString()))
+      if (nrCaBands.any(
+        (e) =>
+            e['NAME'] ==
+                getNrBandName(cellData['bandNR']['downlinkFrequency']) &&
+            e['ARFCN'] == cellData['bandNR']['downlinkArfcn'].toString(),
+      ))
         continue;
-        
+
       nrCaBands.add({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),
         'ARFCN': cellData['bandNR']['downlinkArfcn'].toString(),

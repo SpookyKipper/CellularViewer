@@ -226,6 +226,7 @@ class _HomePageState extends State<HomePage> {
                                   // width: 35,
                                   height: 11.75,
                                 ),
+                                SizedBox(width: 5),
                                 Text(
                                   _cellData != null
                                       ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"

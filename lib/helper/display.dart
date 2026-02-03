@@ -9,8 +9,10 @@ String getNetworkIcon(CellData? cellData) {
     case '3G':
       return 'assets/images/NetworkIcons/3G.png';
     case '4G':
+
+      // Start NSA checks
       if (cellData.nrCcCount > 0) {
-        // 4G + 5G NSA
+        // NR NSA
         if (cellData.lteCcCount > 1) {
           // LTE CA
           if (cellData.nrCcCount > 1) {
@@ -29,15 +31,28 @@ String getNetworkIcon(CellData? cellData) {
         // NR NSA without LTE CA
         return 'assets/images/NetworkIcons/5GNSA.png';
       }
+      // End NSA checks
 
-      if (cellData.lteCcCount > 1) { // LTE CA only
+      // Start Anchor Band checks
+      if (cellData.overrideNetworkType == 'NR_NSA') {
+        // no NR band but NR_NSA, means camping on Anchor Band
+        if (cellData.lteCcCount > 1) {
+          return 'assets/images/NetworkIcons/4GPlus_NSAAnchor.png';
+        }
+        return 'assets/images/NetworkIcons/4G_NSAAnchor.png';
+      }
+      // End Anchor Band checks
+
+      if (cellData.lteCcCount > 1 || cellData.overrideNetworkType == 'LTE_CA') {
+        // LTE CA only
         return 'assets/images/NetworkIcons/4GPlus.png';
       }
 
       // Standard 4G
       return 'assets/images/NetworkIcons/4G.png';
     case 'SA':
-      if (cellData.nrCcCount > 1) { // NR SA CA
+      if (cellData.nrCcCount > 1) {
+        // NR SA CA
         return 'assets/images/NetworkIcons/5GPlusSA.png';
       }
 
@@ -99,65 +114,84 @@ String getImsIcon(String? imsStatus) {
 
 Widget getRsrpDisplay(double rsrp) {
   if (rsrp == 2683662) {
-    return Text("-", style: TextStyle(color: Colors.grey,));
+    return Text("-", style: TextStyle(color: Colors.grey));
   }
   Color color;
-  if (rsrp < -115) { // < -115 dBm
+  if (rsrp < -115) {
+    // < -115 dBm
     color = Colors.red;
-  } else if (rsrp < -105) { // -115 to -105 dBm
+  } else if (rsrp < -105) {
+    // -115 to -105 dBm
     color = Colors.orange;
-  } else if (rsrp < -90) { // -105 to -90 dBm
+  } else if (rsrp < -90) {
+    // -105 to -90 dBm
     color = Colors.yellow;
-  } else if (rsrp < -80) { // -90 to -80 dBm
+  } else if (rsrp < -80) {
+    // -90 to -80 dBm
     color = Colors.lightGreen;
-  } else if (rsrp < -75) {  // -80 to -75 dBm
+  } else if (rsrp < -75) {
+    // -80 to -75 dBm
     color = Colors.greenAccent;
-  } else { // > -75 dBm
+  } else {
+    // > -75 dBm
     color = const Color.fromARGB(255, 110, 209, 255);
   }
   final String displayText = "${rsrp.toInt()} dBm";
-  return Text(displayText, style: TextStyle(color: color,));
+  return Text(displayText, style: TextStyle(color: color));
 }
 
 Widget getSinrDisplay(double sinr) {
   if (sinr == 2683662) {
-    return Text("-", style: TextStyle(color: Colors.grey,));
+    return Text("-", style: TextStyle(color: Colors.grey));
   }
   Color color;
-  if (sinr < -15) { // < -15 dB
+  if (sinr < -15) {
+    // < -15 dB
     color = Colors.red;
-  } else if (sinr < -5) { // -15 to -5 dB
+  } else if (sinr < -5) {
+    // -15 to -5 dB
     color = Colors.deepOrange;
-  } else if (sinr < 0) { // -5 to 0 dB
+  } else if (sinr < 0) {
+    // -5 to 0 dB
     color = Colors.orange;
-  } else if (sinr < 13) { // 0 to 13 dB
+  } else if (sinr < 13) {
+    // 0 to 13 dB
     color = Colors.yellow;
-  } else if (sinr < 20) { // 13 to 20 dB
+  } else if (sinr < 20) {
+    // 13 to 20 dB
     color = Colors.lightGreen;
-  } else if (sinr < 26) { // 20 to 26 dB
+  } else if (sinr < 26) {
+    // 20 to 26 dB
     color = Colors.greenAccent;
-  } else { // > 26 dB
+  } else {
+    // > 26 dB
     color = const Color.fromARGB(255, 110, 209, 255);
   }
-  return Text("${sinr.toInt()} dB", style: TextStyle(color: color));   
+  return Text("${sinr.toInt()} dB", style: TextStyle(color: color));
 }
 
 Widget getRsrqDisplay(double rsrq) {
   if (rsrq == 2683662) {
-    return Text("-", style: TextStyle(color: Colors.grey,));
+    return Text("-", style: TextStyle(color: Colors.grey));
   }
   Color color;
-  if (rsrq < -25) { // < -25 dB
+  if (rsrq < -25) {
+    // < -25 dB
     color = Colors.red;
-  } else if (rsrq < -19) { // -25 to -19 dB
+  } else if (rsrq < -19) {
+    // -25 to -19 dB
     color = Colors.orange;
-  } else if (rsrq < -15) { // -19 to -15 dB
+  } else if (rsrq < -15) {
+    // -19 to -15 dB
     color = Colors.yellow;
-  } else if (rsrq < -11) { // -15 to -11 dB
+  } else if (rsrq < -11) {
+    // -15 to -11 dB
     color = Colors.lightGreen;
-  } else if (rsrq < -8) { // -11 to -8 dB
+  } else if (rsrq < -8) {
+    // -11 to -8 dB
     color = Colors.greenAccent;
-  } else { // > -8 dB
+  } else {
+    // > -8 dB
     color = const Color.fromARGB(255, 110, 209, 255);
   }
   return Text("${rsrq.toInt()} dB", style: TextStyle(color: color));
@@ -165,21 +199,30 @@ Widget getRsrqDisplay(double rsrq) {
 
 Widget getTaDisplay(double ta) {
   if (ta == 2683662) {
-    return Text("-", style: TextStyle(color: Colors.grey,));
+    return Text("-", style: TextStyle(color: Colors.grey));
   }
   Color color;
-  if (ta > 192) { // > 192 
+  if (ta > 192) {
+    // > 192
     color = Colors.red;
-  } else if (ta > 65) { // 193 to 65
+  } else if (ta > 65) {
+    // 193 to 65
     color = Colors.orange;
-  } else if (ta > 26) {  // 66 to 26
+  } else if (ta > 26) {
+    // 66 to 26
     color = Colors.yellow;
-  } else if (ta > 7) {  // 27 to 7
+  } else if (ta > 7) {
+    // 27 to 7
     color = Colors.lightGreen;
-  } else if (ta > 4) {  // 8 to 4
+  } else if (ta > 4) {
+    // 8 to 4
     color = Colors.greenAccent;
-  } else { // <= 4
+  } else {
+    // <= 4
     color = const Color.fromARGB(255, 110, 209, 255);
   }
-  return Text("${ta.toInt()} (${ta.toInt() * 78} m)", style: TextStyle(color: color));
+  return Text(
+    "${ta.toInt()} (${ta.toInt() * 78} m)",
+    style: TextStyle(color: color),
+  );
 }

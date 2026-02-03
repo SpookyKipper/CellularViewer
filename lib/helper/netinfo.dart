@@ -6,7 +6,7 @@ import 'package:flutter_cell_info/flutter_cell_info.dart';
 
 ///////////////////////////////////////////////////////////
 //////////////// NOTE ON CONSTANT 2683662 /////////////////
-/// This constant value (2683662) is used to represent
+/// This constant value (2683662) is used to represent 
 /// unavailable or invalid signal metrics in the
 /// FlutterCellInfo plugin. If a signal metric (like RSRP,
 /// RSRQ, SINR) returns this value, it indicates that the
@@ -27,6 +27,7 @@ class CellData {
   final double nsaSinr;
   final double ta; // 4G only
   final int dataConnStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
+  final String overrideNetworkType; // e.g. NONE, LTE_CA, LTE_ADVANCED, NR_NSA, NR_ADVANCED
 
   CellData({
     required this.networkType,
@@ -43,6 +44,7 @@ class CellData {
     this.nsaRsrq = 2683662,
     this.nsaSinr = 2683662,
     required this.dataConnStatus,
+    required this.overrideNetworkType,
   });
 
   @override
@@ -100,7 +102,7 @@ Future<CellData> getCellInfo() async {
     // }
 
     final List<double> bandwidths = await ServiceStateService.getBandwidths();
-
+    final String overrideNetworkType = await CellService.getOverrideNetworkType();
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
       // 4G or 4G + 5G NSA
@@ -110,6 +112,7 @@ Future<CellData> getCellInfo() async {
         usingCa,
         cpu,
         bandwidths,
+        overrideNetworkType
       );
     } else if (type == 'NR') {
       // 5G SA
@@ -119,6 +122,7 @@ Future<CellData> getCellInfo() async {
         usingCa,
         cpu,
         bandwidths,
+        overrideNetworkType
       );
     } else {
       return Future.error("Unsupported cell type: $type");
@@ -135,6 +139,7 @@ CellData processLteCellInfo(
   bool usingCa,
   String cpu,
   List<double> bandwidths,
+  String overrideNetworkType,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
@@ -277,6 +282,7 @@ CellData processLteCellInfo(
     nsaSinr: nsaSinr,
     ta: ta,
     dataConnStatus: dataConnStatus,
+    overrideNetworkType: overrideNetworkType,
 
     // detailedNetworkType: detailedNetworkType,
   );
@@ -288,6 +294,7 @@ CellData processNrCellInfo(
   bool usingCa,
   String cpu,
   List<double> bandwidths,
+  String overrideNetworkType,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -358,5 +365,6 @@ CellData processNrCellInfo(
     rsrq: rsrq,
     dataConnStatus: dataConnStatus,
     // detailedNetworkType: detailedNetworkType,
+    overrideNetworkType: overrideNetworkType,
   );
 }

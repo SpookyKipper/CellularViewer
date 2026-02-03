@@ -92,7 +92,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     //  FlutterOverlayWindow.closeOverlay();
     // print("Brightness: ${Theme.of(context).brightness}");
     if (Theme.of(context).brightness == Brightness.dark) {
@@ -151,27 +150,33 @@ class _HomePageState extends State<HomePage> {
                       20,
                     ), // Apply rounded corners
                   ),
+
                   child: Column(
                     children: [
+                      SizedBox(height: 15),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
                             getNetworkIcon(_cellData),
-                            width: 100,
-                            height: 100,
+                            // width: 65,
+                            height: 60,
                           ),
+                          SizedBox(width: 10),
                           Image.asset(
                             getImsIcon(imsStatus),
-                            width: 70,
-                            height: 70,
+                            // width: 65,
+                            height: 60,
                           ),
                         ],
                       ),
+                      SizedBox(height: 10),
                       Text(getDescription(_cellData)),
                       if (_cellData != null &&
                           _cellData!.overrideNetworkType == "NR_NSA" &&
-                          _cellData!.nrCcCount == 0) ...[ // LTE Anchor Band aka fake 5G logo
+                          _cellData!.nrCcCount == 0) ...[
+                        // LTE Anchor Band aka fake 5G logo
                         SizedBox(height: 5),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -201,9 +206,10 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Image.asset(
                                   getNetworkIcon4G(_cellData),
-                                  width: 35,
-                                  height: 28,
+                                  // width: 35,
+                                  height: 11.75,
                                 ),
+                                SizedBox(width: 5),
                                 Text(
                                   _cellData != null
                                       ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
@@ -217,8 +223,8 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Image.asset(
                                   getNetworkIcon5G(_cellData),
-                                  width: 35,
-                                  height: 28,
+                                  // width: 35,
+                                  height: 11.75,
                                 ),
                                 Text(
                                   _cellData != null
@@ -247,9 +253,10 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Image.asset(
                                     getImsIcon(imsStatus),
-                                    width: 30,
-                                    height: 30,
+                                    // width: 11.75,
+                                    height: 20,
                                   ),
+                                  SizedBox(width: 5), 
                                   Text(
                                     imsStatus != null
                                         ? imsStatus!.replaceFirst(

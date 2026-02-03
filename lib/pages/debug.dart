@@ -35,7 +35,7 @@ Timer? _timer;
     if (statuses[Permission.location]!.isGranted &&
         statuses[Permission.phone]!.isGranted) {
       // 2. Start Loop
-      _timer = Timer.periodic(const Duration(milliseconds: 1250), (timer) async {
+      _timer = Timer.periodic(const Duration(milliseconds: 650), (timer) async {
         String debugValue = await getDebugValue();
         if (!mounted) return;
         setState(() {

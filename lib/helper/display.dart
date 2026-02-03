@@ -63,6 +63,61 @@ String getNetworkIcon(CellData? cellData) {
   }
 }
 
+
+
+
+String getDescription(CellData? cellData) {
+  if (cellData == null) {
+    return 'Unable to fetch cell data';
+  }
+  switch (cellData.networkType) {
+    case '3G':
+      return 'Connected to a 3G Network';
+    case '4G':
+
+      // Start NSA checks
+      if (cellData.nrCcCount > 0) {
+        // NR NSA
+        if (cellData.lteCcCount > 1) {
+          // LTE CA
+          if (cellData.nrCcCount > 1) {
+            // LTE CA + NR NSA CA
+            return 'Connected to a 5G NSA network with 4G & 5G CA.';
+          }
+          // LTE CA + NR NSA
+          return 'Connected to a 5G NSA network with 4G CA.';
+        }
+
+        if (cellData.nrCcCount > 1) {
+          // NR NSA CA without LTE CA
+          return 'Connected to a 5G NSA network with 5G CA.';
+        }
+
+        // NR NSA without LTE CA
+        return 'Connected to a 5G NSA network.';
+      }
+      // End NSA checks
+
+      if (cellData.lteCcCount > 1 || cellData.overrideNetworkType == 'LTE_CA') {
+        // LTE CA only
+          return 'Connected to a 4G network with CA.';
+      }
+
+      // Standard 4G
+        return 'Connected to a 4G network.';
+    case 'SA':
+      if (cellData.nrCcCount > 1) {
+        // NR SA CA
+        return 'Connected to a 5G SA network with CA.';
+      }
+
+      // Standard NR SA
+      return 'Connected to a 5G SA network.';
+    default:
+      return 'Unable to fetch cell data!';
+  }
+}
+
 String getNetworkIcon4G(CellData? cellData) {
   if (cellData == null) {
     return 'assets/images/icon.png';

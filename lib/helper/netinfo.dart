@@ -158,7 +158,7 @@ CellData processLteCellInfo(
 
   // Collect LTE CA bands from secondary cells
   List<dynamic> secondaryCellList = data['neighboringCellList'];
-  ;
+
   // if (dataConnStatus == 0) {
   //   // If RRC is IDLE, no CA bands are available, no NSA bands either
   //   secondaryCellList = [];
@@ -309,14 +309,13 @@ CellData processNrCellInfo(
     maxCcCount = 999;
   }
 
-  List<dynamic> secondaryCellList = data['neighboringCellList'];
-  ;
-  // if (dataConnStatus == 0 && usingCa == false) {
-  //   // If RRC is IDLE, no CA bands are available, no NSA bands either
-  //   secondaryCellList = [];
-  // } else {
-  //   secondaryCellList = data['neighboringCellList'];
-  // }
+  List<dynamic> secondaryCellList;
+  
+  if (usingCa == false) {
+    secondaryCellList = [];
+  } else {
+    secondaryCellList = data['neighboringCellList'];
+  }
   for (var cell in secondaryCellList) {
     if (cell['type'] == 'NR') {
       // minus 1 for main band

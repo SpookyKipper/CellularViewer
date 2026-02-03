@@ -44,7 +44,7 @@ This app allows you to view detailed 4G/5G cellular network information on your 
     <tr>
       <td>5G NR (SA/NSA)</td>
       <td>✅ Good</td>
-      <td>❗ No band info</td>
+      <td>❗ No band info; SA untested</td>
       <td>---</td>
       <td>❓ Untested</td>
     </tr>

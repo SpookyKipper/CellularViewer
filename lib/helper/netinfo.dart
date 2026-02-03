@@ -299,7 +299,11 @@ CellData processNrCellInfo(
   double sinr = cellDataList['signalNR']['ssSinr'].toDouble();
 
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
-  final int maxCcCount = bandwidths.length;
+  int maxCcCount = bandwidths.length;
+  if (usingCa == true && maxCcCount < 2) {
+    // No limit if CA is used but bandwidth info is unreliable
+    maxCcCount = 999;
+  }
 
   List<dynamic> secondaryCellList = data['neighboringCellList'];
   ;

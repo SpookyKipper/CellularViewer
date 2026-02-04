@@ -248,7 +248,7 @@ CellData processLteCellInfo(
   final int maxNrCcCount =
       maxCcCount - lteCcBands.length; // Remaining CCs for NR
 
-  if (nrCcBands.length > maxNrCcCount) {
+  if (nrCcBands.length > maxNrCcCount && cpu != 'qcom') { // qcom does not include NR in bandwidth info
     // log(
     //     "Warning: NR CC Count (${nrCcBands.length}) exceeds max NR CC Count ($maxNrCcCount). Truncating to max NR CC Count.");
     nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
@@ -267,6 +267,11 @@ CellData processLteCellInfo(
       maxNrCcCount < 100) { // avoid overflow from unreliable bandwidth info
     // Heuristic for NR NSA without reported NR CCs
     nrCcCount = maxNrCcCount;
+  }
+
+  int lteCcCount = lteCcBands.length;
+  if (cpu == 'qcom' && lteCcCount >= 2 && maxCcCount > lteCcCount) {
+    lteCcCount = maxCcCount; // Can assume qcom BW is all LTE CAs because sometimes misses some and recovers only at a later time.
   }
   return CellData(
     networkType: "4G",

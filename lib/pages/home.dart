@@ -420,6 +420,8 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
 
+                                if (_cellData != null &&
+                                    _cellData!.nsaSinr < 70)
                                 Column(
                                   children: [
                                     Text(

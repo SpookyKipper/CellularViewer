@@ -94,9 +94,9 @@ void main() async {
 // overlay entry point
 @pragma("vm:entry-point")
 void overlayMain() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const OverlayApp());
 }
-
 
 bool isDarkMode(BuildContext context) {
   return Theme.of(context).brightness == Brightness.dark;

@@ -29,11 +29,19 @@ class OverlaySettingsPage extends StatelessWidget {
                     if (!statusPermReq!) {
                       // Permission denied, handle accordingly.
                       return;
-                    } 
+                    }
                   }
-                  
-                  
-                  await FlutterOverlayWindow.showOverlay(height: 300, enableDrag: false, alignment: OverlayAlignment.topCenter, startPosition: OverlayPosition(0, 0));
+
+                  await FlutterOverlayWindow.showOverlay(
+                    height: 300,
+                    enableDrag: false,
+                    alignment: OverlayAlignment.topCenter,
+                    startPosition: OverlayPosition(0, 0),
+                    flag: OverlayFlag.clickThrough,
+                    overlayTitle: "Cellular Viewer Overlay Activated",
+                    overlayContent: "Displaying Cellular Info",
+                    // visibility: NotificationVisibility.visibilityPublic,
+                  );
                   // await FlutterOverlayWindow.resizeOverlay(20, 20, true);
                 },
               ),

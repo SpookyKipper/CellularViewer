@@ -63,9 +63,6 @@ String getNetworkIcon(CellData? cellData) {
   }
 }
 
-
-
-
 String getDescription(CellData? cellData) {
   if (cellData == null) {
     return 'Unable to fetch cell data';
@@ -100,11 +97,11 @@ String getDescription(CellData? cellData) {
 
       if (cellData.lteCcCount > 1 || cellData.overrideNetworkType == 'LTE_CA') {
         // LTE CA only
-          return 'Connected to a 4G network with CA.';
+        return 'Connected to a 4G network with CA.';
       }
 
       // Standard 4G
-        return 'Connected to a 4G network.';
+      return 'Connected to a 4G network.';
     case 'SA':
       if (cellData.nrCcCount > 1) {
         // NR SA CA
@@ -118,9 +115,19 @@ String getDescription(CellData? cellData) {
   }
 }
 
-String getNetworkIcon4G(CellData? cellData) {
+String getNetworkIcon4G(CellData? cellData, {bool overlay = false}) {
   if (cellData == null) {
     return 'assets/images/icon.png';
+  }
+
+  if (overlay) {
+    if (cellData.overrideNetworkType == 'NR_NSA' && cellData.nrCcCount == 0) {
+      // no NR band but NR_NSA, means camping on Anchor Band
+      if (cellData.lteCcCount > 1) {
+        return 'assets/images/NetworkIcons/4GPlus_NSAAnchor_Overlay.png';
+      }
+      return 'assets/images/NetworkIcons/4G_NSAAnchor_Overlay.png';
+    }
   }
 
   if (cellData.lteCcCount > 1) {
@@ -144,7 +151,7 @@ String getNetworkIcon5G(CellData? cellData) {
   return 'assets/images/icon.png';
 }
 
-String getImsIcon(String? imsStatus) {
+String getImsIcon(String? imsStatus, {overlay = false}) {
   if (imsStatus == null) {
     return 'assets/images/icon.png';
   }
@@ -157,6 +164,9 @@ String getImsIcon(String? imsStatus) {
     case 'VoNR':
       return 'assets/images/NetworkIcons/VoNR.png';
     case 'VoWiFi':
+      if (overlay) {
+        return 'assets/images/NetworkIcons/VoWiFi_Overlay.png';
+      }
       return 'assets/images/NetworkIcons/VoWiFi.png';
     case '3G':
       return 'assets/images/NetworkIcons/3G.png';

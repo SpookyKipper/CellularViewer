@@ -50,8 +50,8 @@ This app allows you to view detailed 4G/5G cellular network information on your 
     </tr>
     <tr>
       <td>NR CA (SA/NSA)</td>
-      <td colspan="2">❗ No band info, guess CC Count</td>
-      <!-- <td>❗ No band info, guess CC Count</td> -->
+      <td>❗ No band info, guess CC Count</td>
+      <td>❌ Unsupported</td>
       <td>---</td>
       <td>❓ Untested</td>
     </tr>

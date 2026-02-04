@@ -49,7 +49,7 @@ class CellData {
 
   @override
   String toString() {
-    return 'CellData(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, sinr: $sinr, ta: $ta)';
+    return 'CellData(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, rsrq: $rsrq, sinr: $sinr, nsaRsrp: $nsaRsrp, nsaRsrq: $nsaRsrq, nsaSinr: $nsaSinr, ta: $ta, dataConnStatus: $dataConnStatus, overrideNetworkType: $overrideNetworkType)';
   }
 }
 

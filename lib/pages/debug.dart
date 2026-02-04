@@ -134,7 +134,11 @@ NR CC Count (Calculated from BW Info): ${rrcStatus.contains("Connected") ? (band
 
 ============================================
 
-Cell Info: ${cellRawInfo ?? "N/A"}
+Processed Cell Info: $cellInfo
+
+============================================
+
+Raw Cell Info: ${cellRawInfo ?? "N/A"}
 
 ============================================
 

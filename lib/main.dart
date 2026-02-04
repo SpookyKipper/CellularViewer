@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:cellular_viewer/overlay.dart';
 import 'package:cellular_viewer/pages/debug.dart';
 import 'package:cellular_viewer/pages/overlay.dart';
 import 'package:dynamik_theme/dynamik_theme.dart';
@@ -96,60 +97,6 @@ void overlayMain() {
   runApp(const OverlayApp());
 }
 
-class OverlayApp extends StatelessWidget {
-  const OverlayApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    log(MediaQuery.paddingOf(context).top.toString());
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Material(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.paddingOf(context).top - 2),
-            Container(
-              height: 17,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  // Define the colors for the gradient
-                  colors: [Colors.transparent,const Color.fromARGB(57, 0, 0, 0), const Color.fromARGB(57, 0, 0, 0) ,Colors.transparent],
-                  stops: [0.0, 0.2, 0.8, 1.0],
-                  // Optional: Define where the gradient starts and ends
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset("assets/images/NetworkIcons/4G.png", height: 10),
-                  Icon(Icons.signal_cellular_4_bar, color: Colors.white),
-                  SizedBox(width: 5),
-                  Text(
-                    "Overlay Active",
-                    style: TextStyle(
-                      color: Colors.white,
-                      shadows: <Shadow>[
-                        Shadow(
-                          offset: Offset(0, 0),
-                          blurRadius: 0.0,
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 bool isDarkMode(BuildContext context) {
   return Theme.of(context).brightness == Brightness.dark;

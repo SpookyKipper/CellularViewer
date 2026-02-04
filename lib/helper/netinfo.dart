@@ -259,8 +259,8 @@ CellData processLteCellInfo(
   // and there is room in the bandwidth list (maxNrCcCount > 0),
   // assume the "missing" bandwidth slots are occupied by unreported NR bands.
   // This compensates for unreliable NR CA reporting in some APIs.
-  // NRCCCount 0 or 1 means NRCA cannot be reliably detected
-  if ((nrCcCount == 0 || nrCcCount == 1) &&
+  // NRCCCount 1 means NRCA cannot be reliably detected
+  if ((nrCcCount == 1) &&
       lteCcBands.length >=
           2 && // LTECC >=2 means RRC Connected and CA can be reliably detected
       maxNrCcCount > 0 &&

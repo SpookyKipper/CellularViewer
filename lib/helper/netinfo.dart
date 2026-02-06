@@ -6,7 +6,7 @@ import 'package:flutter_cell_info/flutter_cell_info.dart';
 
 ///////////////////////////////////////////////////////////
 //////////////// NOTE ON CONSTANT 2683662 /////////////////
-/// This constant value (2683662) is used to represent 
+/// This constant value (2683662) is used to represent
 /// unavailable or invalid signal metrics in the
 /// FlutterCellInfo plugin. If a signal metric (like RSRP,
 /// RSRQ, SINR) returns this value, it indicates that the
@@ -27,7 +27,8 @@ class CellData {
   final double nsaSinr;
   final double ta; // 4G only
   final int dataConnStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
-  final String overrideNetworkType; // e.g. NONE, LTE_CA, LTE_ADVANCED, NR_NSA, NR_ADVANCED
+  final String
+  overrideNetworkType; // e.g. NONE, LTE_CA, LTE_ADVANCED, NR_NSA, NR_ADVANCED
 
   CellData({
     required this.networkType,
@@ -102,7 +103,8 @@ Future<CellData> getCellInfo() async {
     // }
 
     final List<double> bandwidths = await ServiceStateService.getBandwidths();
-    final String overrideNetworkType = await CellService.getOverrideNetworkType();
+    final String overrideNetworkType =
+        await CellService.getOverrideNetworkType();
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
       // 4G or 4G + 5G NSA
@@ -112,7 +114,7 @@ Future<CellData> getCellInfo() async {
         usingCa,
         cpu,
         bandwidths,
-        overrideNetworkType
+        overrideNetworkType,
       );
     } else if (type == 'NR') {
       // 5G SA
@@ -122,7 +124,7 @@ Future<CellData> getCellInfo() async {
         usingCa,
         cpu,
         bandwidths,
-        overrideNetworkType
+        overrideNetworkType,
       );
     } else {
       return Future.error("Unsupported cell type: $type");
@@ -169,9 +171,17 @@ CellData processLteCellInfo(
   //   secondaryCellList = data['neighboringCellList'];
   // }
   int maxCcCount = bandwidths.length;
-  if (usingCa == true && maxCcCount < 2) {
-    maxCcCount = 999; // No limit if CA is used but bandwidth info is unreliable
+  if (usingCa == true &&
+      (maxCcCount < 2 ||
+          (cpu == 'qcom' && bandwidths.any((double bw) => bw == 0)))) {
+    // qcom sometimes reports bandwidth as 0Hz, trating as unreliable
+    maxCcCount =
+        2683662; // No limit if CA is used but bandwidth info is unreliable
   }
+
+  List<double> lteBandwidths = bandwidths;
+  lteBandwidths.retainWhere((bw) => bw <= 20); // No single LTE BW > 20MHz
+  final int maxLteCcCount = lteBandwidths.length;
 
   for (var cell in secondaryCellList) {
     if (usingCa && cell['type'] == 'LTE') {
@@ -213,10 +223,9 @@ CellData processLteCellInfo(
 
       if (nrCaBands.any((e) => e['NAME'] == nrName && e['ARFCN'] == nrArfcn))
         continue;
-      
+
       if (nrName == "???" && nrCaBands.isNotEmpty)
         continue; // ??? means invalid band if previous band can be detected correctly
-    
 
       if (nsaRsrp == 2683662) {
         nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();
@@ -237,21 +246,27 @@ CellData processLteCellInfo(
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.removeWhere((e) => e.isEmpty);
 
-  if (lteCcBands.length > maxCcCount) {
+  if (lteCcBands.length > maxLteCcCount) {
     // Sanity check, should not happen
     // log(
     //     "Warning: LTE CC Count (${lteCcBands.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
-    lteCcBands.removeRange(maxCcCount, lteCcBands.length);
+    lteCcBands.removeRange(maxLteCcCount, lteCcBands.length);
   }
 
   // Calculate max allowed NR CCs based on remaining bandwidth budget
   final int maxNrCcCount =
       maxCcCount - lteCcBands.length; // Remaining CCs for NR
 
-  if (nrCcBands.length > maxNrCcCount && cpu != 'qcom') { // qcom does not include NR in bandwidth info
-    // log(
-    //     "Warning: NR CC Count (${nrCcBands.length}) exceeds max NR CC Count ($maxNrCcCount). Truncating to max NR CC Count.");
-    nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
+  if (nrCcBands.length > maxNrCcCount && cpu != 'qcom') {
+    // qcom does not include NR in bandwidth info
+    if (maxNrCcCount == 0) {
+      // if no max NRCC is allowed, but has valid NSA signal info, keep it.
+      if ((nsaRsrq == 2683662 && nsaRsrp == 2683662)) { // only remove if no valid NSA signal info (sometimes Exynos misses the NSA band in BW)
+        nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
+      }
+    } else {
+      nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
+    }
   }
 
   int nrCcCount = nrCcBands.length;
@@ -264,14 +279,19 @@ CellData processLteCellInfo(
       lteCcBands.length >=
           2 && // LTECC >=2 means RRC Connected and CA can be reliably detected
       maxNrCcCount > 0 &&
-      maxNrCcCount < 100) { // avoid overflow from unreliable bandwidth info
+      maxNrCcCount < 100) {
+    // avoid overflow from unreliable bandwidth info
     // Heuristic for NR NSA without reported NR CCs
     nrCcCount = maxNrCcCount;
   }
 
   int lteCcCount = lteCcBands.length;
-  if (cpu == 'qcom' && lteCcCount >= 2 && maxCcCount > lteCcCount) {
-    lteCcCount = maxCcCount; // Can assume qcom BW is all LTE CAs because sometimes misses some and recovers only at a later time.
+  if (cpu == 'qcom' &&
+      lteCcCount >= 2 &&
+      maxCcCount > lteCcCount &&
+      maxCcCount != 2683662) {
+    lteCcCount =
+        maxCcCount; // Can assume qcom BW is all LTE CAs because sometimes misses some and recovers only at a later time.
   }
   return CellData(
     networkType: "4G",
@@ -319,7 +339,7 @@ CellData processNrCellInfo(
   }
 
   List<dynamic> secondaryCellList;
-  
+
   if (usingCa == false) {
     secondaryCellList = [];
   } else {

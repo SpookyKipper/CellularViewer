@@ -6,6 +6,7 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
 ## All Features
 - 4G LTE
 - 5G NR (SA/NSA)
+- IMS Status (UMTS/VoLTE/VoNR/WiFi Calling)
 - Carrier Aggregation information
 - Signal strength metrics (RSRP, RSRQ, SINR, TA - 4G only) with color-coded indicators
 - Debug mode to view raw data from the device

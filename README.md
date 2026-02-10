@@ -1,11 +1,12 @@
 # <img src="assets/images/icon.png" height="40"> Cellular Viewer
 
 This app allows you to view detailed 4G/5G cellular network information on your Android device, including cell towers, signal strength, and carrier aggregation status. 
+It uses a modified version of [flutter_cell_info](https://github.com/SpookyKipper/flutter_cell_info) where most of it uses [NetMonster Core](https://github.com/mroczis/netmonster-core).
 
 ## All Features
 - 4G LTE
-- 5G NR (NSA/SA)
-- Carrier Aggregation information (LTE)
+- 5G NR (SA/NSA)
+- Carrier Aggregation information
 - Signal strength metrics (RSRP, RSRQ, SINR, TA - 4G only) with color-coded indicators
 - Debug mode to view raw data from the device
 
@@ -49,11 +50,24 @@ This app allows you to view detailed 4G/5G cellular network information on your 
       <td>❓ Untested</td>
     </tr>
     <tr>
-      <td>NR CA (SA/NSA)</td>
+      <td>NR CA (SA)</td>
+      <td><details><summary>🆗 Supported, minor issues</summary> - Might report CA as available when assigned but not actually connected (RRC IDLE) <br>
+        - Tested up to 2CA<br>
+        - Accurate Band Info</details></td>
+      <td>❓ Untested</td>
+      <td>---</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>NR CA (NSA)</td>
       <td>❗ No band info, guess CC Count</td>
       <td>❌ Unsupported</td>
       <td>---</td>
       <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>mmWave</td>
+      <td colspan="4">❓ Untested, not supported by test device</td>
     </tr>
     <tr>
       <td>IMS: VoWiFi</td>
@@ -66,12 +80,12 @@ This app allows you to view detailed 4G/5G cellular network information on your 
       <td>IMS: VoLTE</td>
       <td>✅ Good</td>
       <td>✅ Good</td>
-      <td>🆗 Limited Testing</td>
+      <td>❓ Untested</td>
       <td>❓ Untested</td>
     </tr>
     <tr>
       <td>IMS: VoNR</td>
-      <td>✅ Good</td>
+      <td><details><summary>✅ Good</summary>Cannot detect half-baked deployments where it will actually fallback to VoLTE when connecting to call</details></td>
       <td>❓ Untested</td>
       <td>---</td>
       <td>❓ Untested</td>

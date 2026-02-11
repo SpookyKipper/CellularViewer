@@ -98,7 +98,7 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
 
 ## Installing Cellular Viewer
 ### Method 1: F-Droid (Recommended)
-You may get this app from the F-Droid Repo: https://fdroid.spookysrv.com/fdroid/repo/<br>
+You may get this app from the F-Droid Repo: https://repo.spookysrv.com/fdroid/repo/<br>
 Updates will be delivered automatically through F-Droid.<br>
 Note: This is not the official F-Droid repository. Anti-Features may not be fully accurate with official definition.
 ### Method 2: APK Sideload

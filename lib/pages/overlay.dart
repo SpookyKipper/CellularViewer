@@ -57,13 +57,13 @@ class OverlaySettingsPage extends StatelessWidget {
                   // await FlutterOverlayWindow.resizeOverlay(20, 20, true);
                 },
               ),
-              SizedBox(width: 20),
-              Button(
-                text: "Go to Debug Page",
-                onPressed: () async {
-                  context.push('/debug');
-                },
-              ),
+              // SizedBox(width: 20),
+              // Button(
+              //   text: "Go to Debug Page",
+              //   onPressed: () async {
+              //     context.push('/debug');
+              //   },
+              // ),
             ],
           ),
         ),

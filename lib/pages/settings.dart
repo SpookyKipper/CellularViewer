@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart' hide AppBar;
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:spookyservices/functions/theme.dart';
 import 'package:spookyservices/widgets/widgets.dart';
+import 'package:spookyservices/widgets/modal.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -12,41 +14,69 @@ class SettingsPage extends StatelessWidget {
         Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            
+
             children: [
-              Button(
-                text: "View Licenses",
-                onPressed: () async {
-                  final info = await PackageInfo.fromPlatform();
-                  final _buildNumber = info.buildNumber;
-                  final _version = info.version;
-                  showLicensePage(
-                    context: context,
-                    applicationName: 'HKJC Updater',
-                    applicationVersion: "$_version ($_buildNumber)",
-                    applicationIcon: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 100),
-                      child: Image.asset("assets/images/icon.png"),
-                    ),
-            
-                    applicationLegalese: "© Spooky Services",
-                  );
-                },
-              ),
-              SizedBox(height: 5),
               Button(
                 text: "Go to Debug Page",
                 onPressed: () async {
-                  context.push('/debug');  
+                  context.push('/debug');
                 },
               ),
               SizedBox(height: 5),
               Button(
                 text: "Configure Overlay Settings",
                 onPressed: () async {
-                  context.push('/overlay');  
+                  context.push('/overlay');
                 },
               ),
+              SizedBox(height: 5),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Button(
+                    text: "View Licenses",
+                    onPressed: () async {
+                      final info = await PackageInfo.fromPlatform();
+                      final _buildNumber = info.buildNumber;
+                      final _version = info.version;
+                      showLicensePage(
+                        context: context,
+                        applicationName: 'CellularViewer',
+                        applicationVersion: "$_version ($_buildNumber)",
+                        applicationIcon: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 100),
+                          child: Image.asset("assets/images/icon.png"),
+                        ),
+
+                        applicationLegalese:
+                            "© Spooky Kipper (Spooky Services)",
+                      );
+                    },
+                  ),
+                  SizedBox(width: 5),
+
+                  Button(
+                    text: "View Copyright Info",
+                    onPressed: () async {
+                      showModal(
+                        context,
+                        "Copyright Information",
+                        '''App originally created by Spooky Kipper (Spooky Services)
+Copyright © 2026
+Licensed under GNU GPLv3.
+https://github.com/SpookyKipper/CellularViewer/
+                                                      
+This app uses open source libraries.
+Click "View licenses" for more information.
+This app uses a modified version of flutter_cell_info. Source: https://github.com/SpookyKipper/flutter_cell_info
+''',
+                      );
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
             ],
           ),
         ),

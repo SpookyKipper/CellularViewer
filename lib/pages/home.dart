@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     if (statuses[Permission.location]!.isGranted &&
         statuses[Permission.phone]!.isGranted) {
       // 2. Start Loop
-      _timer = Timer.periodic(const Duration(milliseconds: 650), (timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
         _fetchNetworkInfo();
         _fetchImsStatus();
       });

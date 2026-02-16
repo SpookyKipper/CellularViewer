@@ -117,7 +117,7 @@ class _OverlayAppState extends State<OverlayApp> {
   }
 
   Future<void> _initTimer() async {
-    _timer = Timer.periodic(const Duration(milliseconds: 650), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 1800), (timer) {
       _fetchNetworkInfo();
       _fetchImsStatus();
     });

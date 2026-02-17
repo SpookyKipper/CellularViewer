@@ -73,9 +73,11 @@ Future<CellData> getCellInfo() async {
       return Future.error("Parsed cell info is empty");
     }
 
-    List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
+    final List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
 
     if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
+
+    final String mccmnc = "${cellDataList[0]["mcc"]}${cellDataList[0]["mnc"]}";
 
     String cpu;
     if (cellDataList[0]["HARDWARE"] == "qcom") {
@@ -99,19 +101,33 @@ Future<CellData> getCellInfo() async {
     } else {
       data = -1;
     }
+    final Map serviceStateInfo =
+        await ServiceStateService.getAllInfoFromSerivceState();
 
-    bool usingCa = await ServiceStateService.searchServiceState(
-      "isUsingCarrierAggregation=true",
-    );
+    final bool usingCa = serviceStateInfo["usingCa"];
     // if (!usingCa) {
     //   log("Carrier Aggregation not in use, skipping CA band processing.");
     // } else {
     //   log("Carrier Aggregation in use, processing CA bands.");
     // }
 
-    final List<double> bandwidths = await ServiceStateService.getBandwidths();
-    final String overrideNetworkType =
-        await CellService.getOverrideNetworkType();
+    final List<double> bandwidths = serviceStateInfo["bandwidths"];
+    final bool lteAnchor = serviceStateInfo["lteAnchor"];
+    final bool nrNsa = serviceStateInfo["nrNsa"];
+    final String carrierName = serviceStateInfo["carrierName"];
+    final String mvnoName = serviceStateInfo["mvnoName"];
+    final bool isImsRegistered = serviceStateInfo["imsRegistered"];
+    String nsaStatus;
+    if (nrNsa) {
+      nsaStatus = "connected";
+    } else if (lteAnchor) {
+      nsaStatus = "anchor";
+    } else {
+      nsaStatus = "no";
+    }
+
+    // final String nsaStatus =
+    //     await CellService.getOverrideNetworkType();
     String type = cellDataList[0]['type'];
     if (type == 'LTE') {
       // 4G or 4G + 5G NSA
@@ -121,18 +137,18 @@ Future<CellData> getCellInfo() async {
         usingCa,
         cpu,
         bandwidths,
-        overrideNetworkType,
+        mccmnc,
+        carrierName,
+        mvnoName,
+        isImsRegistered,
+        nsaStatus,
       );
     } else if (type == 'NR') {
       // 5G SA
-      return processNrCellInfo(
-        parsedCellInfo,
-        data,
-        usingCa,
-        cpu,
-        bandwidths,
-        overrideNetworkType,
-      );
+      return processNrCellInfo(parsedCellInfo, data, usingCa, cpu, bandwidths, mccmnc,
+        carrierName,
+        mvnoName,
+        isImsRegistered);
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -148,7 +164,11 @@ CellData processLteCellInfo(
   bool usingCa,
   String cpu,
   List<double> bandwidths,
-  String overrideNetworkType,
+  String mccmnc,
+  String carrierName,
+  String mvnoName,
+  bool isImsRegistered,
+  String nsaStatus,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
 
@@ -218,7 +238,6 @@ CellData processLteCellInfo(
         'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
       });
     } else if (cell['type'] == 'NR' && (usingCa || nrCaBands.isEmpty)) {
-      // Limit NR CA bands to remaining CCs (LTE CC Count is reliable on qcom and Exynos)
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
@@ -268,7 +287,8 @@ CellData processLteCellInfo(
     // qcom does not include NR in bandwidth info
     if (maxNrCcCount == 0) {
       // if no max NRCC is allowed, but has valid NSA signal info, keep it.
-      if ((nsaRsrq == 2683662 && nsaRsrp == 2683662)) { // only remove if no valid NSA signal info (sometimes Exynos misses the NSA band in BW)
+      if ((nsaRsrq == 2683662 && nsaRsrp == 2683662)) {
+        // only remove if no valid NSA signal info (sometimes Exynos misses the NSA band in BW)
         nrCcBands.removeRange(maxNrCcCount, nrCcBands.length);
       }
     } else {
@@ -314,7 +334,11 @@ CellData processLteCellInfo(
     nsaSinr: nsaSinr,
     ta: ta,
     dataConnStatus: dataConnStatus,
-    overrideNetworkType: overrideNetworkType,
+    mccmnc: mccmnc,
+    carrierName: carrierName,
+    mvnoName: mvnoName, 
+    isImsRegistered: isImsRegistered,
+    nsaStatus: nsaStatus,
 
     // detailedNetworkType: detailedNetworkType,
   );
@@ -326,7 +350,10 @@ CellData processNrCellInfo(
   bool usingCa,
   String cpu,
   List<double> bandwidths,
-  String overrideNetworkType,
+  String mccmnc,
+  String carrierName,
+  String mvnoName,
+  bool isImsRegistered,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -397,6 +424,10 @@ CellData processNrCellInfo(
     rsrq: rsrq,
     dataConnStatus: dataConnStatus,
     // detailedNetworkType: detailedNetworkType,
-    overrideNetworkType: overrideNetworkType,
+    mccmnc: mccmnc,
+    carrierName: carrierName,
+    mvnoName: mvnoName, 
+    isImsRegistered: isImsRegistered,
+    nsaStatus: "no",
   );
 }

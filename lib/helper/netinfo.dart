@@ -27,8 +27,11 @@ class CellData {
   final double nsaSinr;
   final double ta; // 4G only
   final int dataConnStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
-  final String
-  overrideNetworkType; // e.g. NONE, LTE_CA, LTE_ADVANCED, NR_NSA, NR_ADVANCED
+  final String nsaStatus; // no, anchor, connected
+  final String mccmnc;
+  final String carrierName;
+  final String mvnoName;
+  final bool isImsRegistered;
 
   CellData({
     required this.networkType,
@@ -45,12 +48,16 @@ class CellData {
     this.nsaRsrq = 2683662,
     this.nsaSinr = 2683662,
     required this.dataConnStatus,
-    required this.overrideNetworkType,
+    required this.nsaStatus,
+    required this.mccmnc,
+    required this.carrierName,
+    required this.mvnoName,
+    required this.isImsRegistered,
   });
 
   @override
   String toString() {
-    return 'CellData(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, rsrq: $rsrq, sinr: $sinr, nsaRsrp: $nsaRsrp, nsaRsrq: $nsaRsrq, nsaSinr: $nsaSinr, ta: $ta, dataConnStatus: $dataConnStatus, overrideNetworkType: $overrideNetworkType)';
+    return 'CellData(networkType: $networkType, lteCcCount: $lteCcCount, lteCcBands: $lteCcBands, nrCcCount: $nrCcCount, nrCcBands: $nrCcBands, rsrp: $rsrp, rsrq: $rsrq, sinr: $sinr, nsaRsrp: $nsaRsrp, nsaRsrq: $nsaRsrq, nsaSinr: $nsaSinr, ta: $ta, dataConnStatus: $dataConnStatus, nsaStatus: $nsaStatus)';
   }
 }
 

@@ -424,23 +424,6 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                              if (_cellData != null &&
-                                  _cellData!.networkType != "4G")
-                                Column(
-                                  children: [
-                                    Text(
-                                      "SS RSRQ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    getRsrqDisplay(
-                                      _cellData != null
-                                          ? _cellData!.rsrq
-                                          : 2683662,
-                                    ),
-                                  ],
-                                ),
                             ],
                           ),
                           if (_cellData != null &&
@@ -491,21 +474,21 @@ class _HomePageState extends State<HomePage> {
 
                                 if (_cellData != null &&
                                     _cellData!.nsaSinr < 70)
-                                Column(
-                                  children: [
-                                    Text(
-                                      "SS SINR",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "SS SINR",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    getSinrDisplay(
-                                      _cellData != null
-                                          ? _cellData!.nsaSinr
-                                          : 2683662,
-                                    ),
-                                  ],
-                                ),
+                                      getSinrDisplay(
+                                        _cellData != null
+                                            ? _cellData!.nsaSinr
+                                            : 2683662,
+                                      ),
+                                    ],
+                                  ),
                               ],
                             ),
                           ],

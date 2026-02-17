@@ -116,8 +116,9 @@ Build Number: ${info.buildNumber}
 
 ============================================
 
-Override Network Type: ${await CellService.getOverrideNetworkType()}
+Override Network Type (not used): ${await CellService.getOverrideNetworkType()}
 Using Carrier Aggregation: ${usingCa ? "YES" : "NO"}
+NRStatus (NSA): ${cellInfo.nsaStatus}
 
 ============================================
 

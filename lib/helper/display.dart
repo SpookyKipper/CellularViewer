@@ -173,6 +173,8 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
   switch (imsStatus) {
     case 'No Voice or CSFB':
       return 'assets/images/NetworkIcons/CSFB.png';
+    case 'No Voice or VoLTE or CSFB':
+      return 'assets/images/NetworkIcons/CSFB.png';
     case 'VoLTE':
       return 'assets/images/NetworkIcons/VoLTE.png';
     case 'VoNR':
@@ -182,12 +184,12 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
         return 'assets/images/NetworkIcons/VoWiFi_Overlay.png';
       }
       return 'assets/images/NetworkIcons/VoWiFi.png';
-    case '3G':
+    case '3G' || 'UMTS' || 'HSPA' || 'HSDPA':
       return 'assets/images/NetworkIcons/3G.png';
-    case '2G':
+    case '2G' || 'GSM' || 'GPRS' || 'EDGE':
       return 'assets/images/NetworkIcons/2G.png';
     default:
-      return 'assets/images/icon.png';
+      return 'assets/images/NoVoice.png';
   }
 }
 

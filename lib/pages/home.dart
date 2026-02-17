@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cellular_viewer/helper/display.dart';
+import 'package:cellular_viewer/helper/ims_helper.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:flutter_cell_info/ims/info.dart';
@@ -52,7 +53,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchImsStatus() async {
     try {
-      String imsInfo = await ImsService.getNetworkType();
+      if (_cellData == null) {
+        if (mounted) setState(() => imsStatus = null);
+        return;
+      }
+      String imsInfo = await imsHelper.getNetworkType(_cellData!);
       if (imsInfo == "PERMISSION_DENIED") {
         setState(() => imsStatus = null);
         return;

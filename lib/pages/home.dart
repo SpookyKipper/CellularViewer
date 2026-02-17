@@ -179,8 +179,9 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 10),
                       Text(getDescription(_cellData)),
                       if (_cellData != null &&
-                          _cellData!.overrideNetworkType == "NR_NSA" &&
-                          _cellData!.nrCcCount == 0) ...[
+                          (_cellData!.nsaStatus == "anchor" ||
+                              (_cellData!.nsaStatus == "connected" &&
+                                  _cellData!.nrCcCount == 0))) ...[
                         // LTE Anchor Band aka fake 5G logo
                         SizedBox(height: 5),
                         Row(
@@ -189,13 +190,76 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: Text(
                                 textAlign: TextAlign.center,
-                                "[5G NSA] Connected to a 4G anchor band.\nIt is 5G on display for marketing, but the actual 5G connection has not been established yet.",
+                                "[5G NSA] This is an anchor band.",
                               ),
                             ),
                           ],
                         ),
                       ],
+
                       SizedBox(height: 10),
+                      // Text(
+                      //   "Carrier Info",
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 16,
+                      //   ),
+                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Flexible(
+                            fit: (_cellData!.mvnoName != "")
+                                ? FlexFit.tight // yes mvno, expand to fill space
+                                : FlexFit
+                                      .loose, // no mvno, 
+                            child: Column(
+                              children: [
+                                Text(
+                                  "PLMN",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  _cellData != null
+                                      ? _cellData!.mccmnc
+                                      : "Loading...",
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Column(
+                            children: [
+                              Text(
+                                "Carrier",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                _cellData != null
+                                    ? _cellData!.carrierName
+                                    : "Loading...",
+                              ),
+                            ],
+                          ),
+
+                          if (_cellData != null &&
+                              _cellData!.mvnoName != "")
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "MVNO",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(_cellData!.mvnoName),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
                       Column(
                         children: [
                           Text(
@@ -262,7 +326,7 @@ class _HomePageState extends State<HomePage> {
                                     // width: 11.75,
                                     height: 20,
                                   ),
-                                  SizedBox(width: 5), 
+                                  SizedBox(width: 5),
                                   Text(
                                     imsStatus != null
                                         ? imsStatus!.replaceFirst(

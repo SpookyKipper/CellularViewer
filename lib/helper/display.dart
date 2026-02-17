@@ -5,6 +5,9 @@ String getNetworkIcon(CellData? cellData) {
   if (cellData == null) {
     return 'assets/images/icon.png';
   }
+  if (cellData.lteCcCount == 0 && cellData.nrCcCount == 0) {
+    return "assets/images/NetworkIcons/NoSignal.png";
+  } 
   switch (cellData.networkType) {
     case '3G':
       return 'assets/images/NetworkIcons/3G.png';
@@ -34,16 +37,17 @@ String getNetworkIcon(CellData? cellData) {
       // End NSA checks
 
       // Start Anchor Band checks
-      if (cellData.overrideNetworkType == 'NR_NSA') {
-        // no NR band but NR_NSA, means camping on Anchor Band
+      if (cellData.nsaStatus != 'no') {
         if (cellData.lteCcCount > 1) {
+          // LTE CA Anchor
           return 'assets/images/NetworkIcons/4GPlus_NSAAnchor.png';
         }
+        // Standard LTE Anchor
         return 'assets/images/NetworkIcons/4G_NSAAnchor.png';
       }
       // End Anchor Band checks
 
-      if (cellData.lteCcCount > 1 || cellData.overrideNetworkType == 'LTE_CA') {
+      if (cellData.lteCcCount > 1) {
         // LTE CA only
         return 'assets/images/NetworkIcons/4GPlus.png';
       }
@@ -67,6 +71,9 @@ String getDescription(CellData? cellData) {
   if (cellData == null) {
     return 'Unable to fetch cell data';
   }
+  if (cellData.lteCcCount == 0 && cellData.nrCcCount == 0) {
+    return "No Signal";
+  } 
   switch (cellData.networkType) {
     case '3G':
       return 'Connected to a 3G Network';
@@ -95,7 +102,8 @@ String getDescription(CellData? cellData) {
       }
       // End NSA checks
 
-      if (cellData.lteCcCount > 1 || cellData.overrideNetworkType == 'LTE_CA') {
+      if (cellData.lteCcCount > 1) {
+        // || cellData.overrideNetworkType == 'LTE_CA'
         // LTE CA only
         return 'Connected to a 4G network with CA.';
       }
@@ -119,13 +127,15 @@ String getNetworkIcon4G(CellData? cellData, {bool overlay = false}) {
   if (cellData == null) {
     return 'assets/images/icon.png';
   }
+  if (cellData.lteCcCount == 0) {
+    return "assets/images/NetworkIcons/NoSignal.png";
+  } 
 
   if (overlay) {
-    if (cellData.overrideNetworkType == 'NR_NSA' && cellData.nrCcCount == 0) {
-      // no NR band but NR_NSA, means camping on Anchor Band
-      if (cellData.lteCcCount > 1) {
-        return 'assets/images/NetworkIcons/4GPlus_NSAAnchor_Overlay.png';
-      }
+    if (cellData.nsaStatus == 'connected' && cellData.nrCcCount == 0) {
+      return 'assets/images/NetworkIcons/4GPlus_NSAAnchor_Overlay.png';
+    }
+    if (cellData.nsaStatus == 'anchor' && cellData.nrCcCount == 0) {
       return 'assets/images/NetworkIcons/4G_NSAAnchor_Overlay.png';
     }
   }
@@ -142,6 +152,10 @@ String getNetworkIcon5G(CellData? cellData) {
   if (cellData == null) {
     return 'assets/images/icon.png';
   }
+
+  if (cellData.nrCcCount == 0) {
+    return "assets/images/NetworkIcons/NoSignal.png";
+  } 
 
   if (cellData.nrCcCount > 1) {
     return 'assets/images/NetworkIcons/5GPlus.png';

@@ -178,134 +178,142 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 10),
                       Text(getDescription(_cellData)),
-                      if (_cellData != null &&
-                          (_cellData!.nsaStatus == "anchor" ||
-                              (_cellData!.nsaStatus == "connected" &&
-                                  _cellData!.nrCcCount == 0))) ...[
-                        // LTE Anchor Band aka fake 5G logo
-                        SizedBox(height: 5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                "[5G NSA] This is an anchor band.",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
 
-                      SizedBox(height: 10),
-                      // Text(
-                      //   "Carrier Info",
-                      //   style: TextStyle(
-                      //     fontWeight: FontWeight.bold,
-                      //     fontSize: 16,
-                      //   ),
-                      // ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Flexible(
-                            fit: (_cellData!.mvnoName != "")
-                                ? FlexFit.tight // yes mvno, expand to fill space
-                                : FlexFit
-                                      .loose, // no mvno, 
-                            child: Column(
-                              children: [
-                                Text(
-                                  "PLMN",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  _cellData != null
-                                      ? _cellData!.mccmnc
-                                      : "Loading...",
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Column(
+                      if (getDescription(_cellData) != "No Signal") ...[
+                        if (_cellData != null &&
+                            (_cellData!.nsaStatus == "anchor" ||
+                                (_cellData!.nsaStatus == "connected" &&
+                                    _cellData!.nrCcCount == 0))) ...[
+                          // LTE Anchor Band aka fake 5G logo
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                "Carrier",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _cellData != null
-                                    ? _cellData!.carrierName
-                                    : "Loading...",
+                              Expanded(
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  "[5G NSA] This is an anchor band.",
+                                ),
                               ),
                             ],
                           ),
+                        ],
 
-                          if (_cellData != null &&
-                              _cellData!.mvnoName != "")
-                            Expanded(
+                        SizedBox(height: 10),
+                        // Text(
+                        //   "Carrier Info",
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 16,
+                        //   ),
+                        // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              fit:
+                                  (_cellData != null &&
+                                      _cellData!.mvnoName != "")
+                                  ? FlexFit
+                                        .tight // yes mvno, expand to fill space
+                                  : FlexFit.loose, // no mvno,
                               child: Column(
                                 children: [
                                   Text(
-                                    "MVNO",
+                                    "PLMN",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(_cellData!.mvnoName),
+                                  Text(
+                                    _cellData != null
+                                        ? _cellData!.mccmnc
+                                        : "Loading...",
+                                  ),
                                 ],
                               ),
                             ),
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      Column(
-                        children: [
-                          Text(
-                            "Connecting Bands and Frequencies",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          if (_cellData != null && _cellData!.lteCcCount >= 1)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+
+                            Column(
                               children: [
-                                Image.asset(
-                                  getNetworkIcon4G(_cellData),
-                                  // width: 35,
-                                  height: 11.75,
+                                Text(
+                                  "Carrier",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(width: 5),
                                 Text(
                                   _cellData != null
-                                      ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
+                                      ? _cellData!.carrierName
                                       : "Loading...",
                                 ),
                               ],
                             ),
-                          if (_cellData != null && _cellData!.nrCcCount >= 1)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  getNetworkIcon5G(_cellData),
-                                  // width: 35,
-                                  height: 11.75,
+
+                            if (_cellData != null && _cellData!.mvnoName != "")
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "MVNO",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(_cellData!.mvnoName),
+                                  ],
                                 ),
-                                SizedBox(width: 5),
-                                Text(
-                                  _cellData != null
-                                      ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"
-                                      : "Loading...",
-                                ),
-                              ],
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Column(
+                          children: [
+                            Text(
+                              "Connecting Bands and Frequencies",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
-                        ],
-                      ),
-                      SizedBox(height: 5),
+                            if (_cellData != null && _cellData!.lteCcCount >= 1)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    getNetworkIcon4G(_cellData),
+                                    // width: 35,
+                                    height: 11.75,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    _cellData != null
+                                        ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
+                                        : "Loading...",
+                                  ),
+                                ],
+                              ),
+                            if (_cellData != null && _cellData!.nrCcCount >= 1)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    getNetworkIcon5G(_cellData),
+                                    // width: 35,
+                                    height: 11.75,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    _cellData != null
+                                        ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"
+                                        : "Loading...",
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                      ],
+                      if (getDescription(_cellData) == "No Signal")
+                        SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -341,97 +349,12 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 5),
-                      Column(
-                        children: [
-                          Text(
-                            "Signal Strength",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    _cellData != null &&
-                                            _cellData!.networkType == "4G"
-                                        ? "RSRP"
-                                        : "SS RSRP",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  getRsrpDisplay(
-                                    _cellData != null ? _cellData!.rsrp : 0,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    _cellData != null &&
-                                            _cellData!.networkType == "4G"
-                                        ? "RSRQ"
-                                        : "SS RSRQ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  getRsrqDisplay(
-                                    _cellData != null
-                                        ? _cellData!.rsrq
-                                        : 2683662,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    _cellData != null &&
-                                            _cellData!.networkType == "4G"
-                                        ? "SNR"
-                                        : "SS SINR",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  getSinrDisplay(
-                                    _cellData != null
-                                        ? _cellData!.sinr
-                                        : 2683662,
-                                  ),
-                                ],
-                              ),
-                              if (_cellData != null &&
-                                  _cellData!.networkType == "4G")
-                                Column(
-                                  children: [
-                                    Text(
-                                      "TA",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    getTaDisplay(
-                                      _cellData != null
-                                          ? _cellData!.ta
-                                          : 2683662,
-                                    ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                          if (_cellData != null &&
-                              _cellData!.networkType == "4G" &&
-                              _cellData!.nrCcCount >= 1) ...[
-                            SizedBox(height: 5),
+                      if (getDescription(_cellData) != "No Signal") ...[
+                        SizedBox(height: 5),
+                        Column(
+                          children: [
                             Text(
-                              "NSA Signal Strength",
+                              "Signal Strength",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -443,85 +366,173 @@ class _HomePageState extends State<HomePage> {
                                 Column(
                                   children: [
                                     Text(
-                                      "SS RSRP",
+                                      _cellData != null &&
+                                              _cellData!.networkType == "4G"
+                                          ? "RSRP"
+                                          : "SS RSRP",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     getRsrpDisplay(
-                                      _cellData != null
-                                          ? _cellData!.nsaRsrp
-                                          : 0,
+                                      _cellData != null ? _cellData!.rsrp : 0,
                                     ),
                                   ],
                                 ),
-
                                 Column(
                                   children: [
                                     Text(
-                                      "SS RSRQ",
+                                      _cellData != null &&
+                                              _cellData!.networkType == "4G"
+                                          ? "RSRQ"
+                                          : "SS RSRQ",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     getRsrqDisplay(
                                       _cellData != null
-                                          ? _cellData!.nsaRsrq
+                                          ? _cellData!.rsrq
                                           : 2683662,
                                     ),
                                   ],
                                 ),
-
+                                Column(
+                                  children: [
+                                    Text(
+                                      _cellData != null &&
+                                              _cellData!.networkType == "4G"
+                                          ? "SNR"
+                                          : "SS SINR",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    getSinrDisplay(
+                                      _cellData != null
+                                          ? _cellData!.sinr
+                                          : 2683662,
+                                    ),
+                                  ],
+                                ),
                                 if (_cellData != null &&
-                                    _cellData!.nsaSinr < 70)
+                                    _cellData!.networkType == "4G")
                                   Column(
                                     children: [
                                       Text(
-                                        "SS SINR",
+                                        "TA",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                      getSinrDisplay(
+                                      getTaDisplay(
                                         _cellData != null
-                                            ? _cellData!.nsaSinr
+                                            ? _cellData!.ta
                                             : 2683662,
                                       ),
                                     ],
                                   ),
                               ],
                             ),
+                            if (_cellData != null &&
+                                _cellData!.networkType == "4G" &&
+                                _cellData!.nrCcCount >= 1) ...[
+                              SizedBox(height: 5),
+                              Text(
+                                "NSA Signal Strength",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "SS RSRP",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      getRsrpDisplay(
+                                        _cellData != null
+                                            ? _cellData!.nsaRsrp
+                                            : 0,
+                                      ),
+                                    ],
+                                  ),
+
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "SS RSRQ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      getRsrqDisplay(
+                                        _cellData != null
+                                            ? _cellData!.nsaRsrq
+                                            : 2683662,
+                                      ),
+                                    ],
+                                  ),
+
+                                  if (_cellData != null &&
+                                      _cellData!.nsaSinr < 70)
+                                    Column(
+                                      children: [
+                                        Text(
+                                          "SS SINR",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        getSinrDisplay(
+                                          _cellData != null
+                                              ? _cellData!.nsaSinr
+                                              : 2683662,
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ],
                           ],
-                        ],
-                      ),
-                      // SizedBox(height: 10),
-                      // Column(
-                      //   children: [
-                      //     Text(
-                      //       "Detailed Network Type",
-                      //       style: TextStyle(
-                      //         fontWeight: FontWeight.bold,
-                      //         fontSize: 16,
-                      //       ),
-                      //     ),
-                      //     Text(_cellData != null
-                      //         ? _cellData!.detailedNetworkType
-                      //         : "Loading..."),
-                      //   ],
-                      // ),
-                      // SizedBox(height: 10),
-                      // Column(
-                      //   children: [
-                      //     Text(
-                      //       "Debug",
-                      //       style: TextStyle(
-                      //         fontWeight: FontWeight.bold,
-                      //         fontSize: 16,
-                      //       ),
-                      //     ),
-                      //     Text(_statusMessage),
-                      //   ],
-                      // ),
+                        ),
+                        // SizedBox(height: 10),
+                        // Column(
+                        //   children: [
+                        //     Text(
+                        //       "Detailed Network Type",
+                        //       style: TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 16,
+                        //       ),
+                        //     ),
+                        //     Text(_cellData != null
+                        //         ? _cellData!.detailedNetworkType
+                        //         : "Loading..."),
+                        //   ],
+                        // ),
+                        // SizedBox(height: 10),
+                        // Column(
+                        //   children: [
+                        //     Text(
+                        //       "Debug",
+                        //       style: TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 16,
+                        //       ),
+                        //     ),
+                        //     Text(_statusMessage),
+                        //   ],
+                        // ),
+                      ],
                       SizedBox(height: 13),
                     ],
                   ),

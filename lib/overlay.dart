@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cellular_viewer/helper/display.dart';
+import 'package:cellular_viewer/helper/ims_helper.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/widgets/widgets.dart';
-import 'dart:math';
+import 'dart:math' hide log;
 import 'package:flutter/material.dart';
 
 class SmartInvert extends StatelessWidget {
@@ -125,8 +127,14 @@ class _OverlayAppState extends State<OverlayApp> {
 
   Future<void> _fetchImsStatus() async {
     try {
-      String imsInfo = await ImsService.getNetworkType().timeout(const Duration(milliseconds: 500));
-      // print("IMS Info: $imsInfo");
+      if (_cellData == null) {
+        if (mounted) setState(() => imsStatus = null);
+        return;
+      }
+      String imsInfo = await imsHelper
+          .getNetworkType(_cellData!)
+          .timeout(const Duration(milliseconds: 3000));
+      log("Fetched IMS info: $imsInfo");
       if (imsInfo == "PERMISSION_DENIED") {
         setState(() => imsStatus = null);
         return;
@@ -141,7 +149,9 @@ class _OverlayAppState extends State<OverlayApp> {
   Future<void> _fetchNetworkInfo() async {
     try {
       // 1. Get raw cell list from the plugin
-      CellData cells = await getCellInfo().timeout(const Duration(milliseconds: 500));
+      CellData cells = await getCellInfo().timeout(
+        const Duration(milliseconds: 1500),
+      );
 
       // 2. Process data manually
       // _processCells(cells);
@@ -190,7 +200,22 @@ class _OverlayAppState extends State<OverlayApp> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: 10),
+                  // SizedBox(width: 10),
+                  if (_cellData != null &&
+                      _cellData!.lteCcCount + _cellData!.nrCcCount == 0) ...[
+                    Image.asset(
+                      "assets/images/NetworkIcons/NoSignalOverlay.png",
+                      fit: BoxFit.cover,
+                      height: 12,
+                    ),
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Text(
+                        "  •  ",
+                        style: TextStyle(color: Colors.white, fontSize: 11.5),
+                      ),
+                    ),
+                  ],
 
                   if (_cellData != null && _cellData!.networkType == "4G") ...[
                     SmartInvert(
@@ -207,7 +232,7 @@ class _OverlayAppState extends State<OverlayApp> {
                           ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
                           : "Loading...",
                       style: TextStyle(color: Colors.white, fontSize: 11.5),
-                    ), 
+                    ),
                     Transform.scale(
                       scale: 1.5,
                       child: Text(

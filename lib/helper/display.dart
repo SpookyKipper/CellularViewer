@@ -189,7 +189,7 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
     case '2G' || 'GSM' || 'GPRS' || 'EDGE':
       return 'assets/images/NetworkIcons/2G.png';
     default:
-      return 'assets/images/NoVoice.png';
+      return 'assets/images/NetworkIcons/NoVoice.png';
   }
 }
 

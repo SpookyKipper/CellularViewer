@@ -63,8 +63,8 @@ class CellData {
 
 Future<CellData> getCellInfo() async {
   try {
-    String? cellInfo = await CellInfo.getCellInfo;
-    if (cellInfo == null) return Future.error("No cell info available");
+    String? cellInfo = await CellInfo.getCellInfo; //.timeout(const Duration(milliseconds: 500), onTimeout: () => "timeout");
+    if (cellInfo == null) return Future.error("Cell info is null");
     // log(cellInfo);
 
     Map<String, dynamic> parsedCellInfo = jsonDecode(cellInfo);
@@ -74,8 +74,9 @@ Future<CellData> getCellInfo() async {
     }
 
     final List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
+    if (cellDataList.isEmpty)  return CellData(networkType: "N/A", rsrp: 2683662, sinr: 2683662, rsrq: 2683662, dataConnStatus: -1, nsaStatus: "no", mccmnc: "00000", carrierName: "N/A", mvnoName: "N/A", isImsRegistered: false);
 
-    if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
+    // if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
 
     final String mccmnc = "${cellDataList[0]["mcc"]}${cellDataList[0]["mnc"]}";
 

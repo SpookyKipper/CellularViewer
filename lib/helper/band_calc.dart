@@ -86,7 +86,7 @@ String getNrBandName(int frequency) {
     // n77
     _Band("3700", [3300, 4200]),
     // n78 (3.3GHz indoor band)
-    _Band("3500", [3300, 3399]), 
+    _Band("3300", [3300, 3399]), 
     // n78 (3.5GHz HK Territory-wide band)
     _Band("3500", [3400, 3800]),
     // n79

@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   Timer? _timer;
 
   CellData? _cellData;
-  String? imsStatus;
+  String? _imsStatus;
 
   String _statusMessage = "Initializing...";
 
@@ -44,30 +44,30 @@ class _HomePageState extends State<HomePage> {
       // 2. Start Loop
       _timer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
         _fetchNetworkInfo();
-        _fetchImsStatus();
+        // _fetch_imsStatus();
       });
     } else {
       if (mounted) setState(() => _statusMessage = "Permissions Denied");
     }
   }
 
-  Future<void> _fetchImsStatus() async {
-    try {
-      if (_cellData == null) {
-        if (mounted) setState(() => imsStatus = null);
-        return;
-      }
-      String imsInfo = await imsHelper.getNetworkType(_cellData!);
-      if (imsInfo == "PERMISSION_DENIED") {
-        setState(() => imsStatus = null);
-        return;
-      }
-      // log("IMS Info: $imsInfo");
-      if (mounted) setState(() => imsStatus = imsInfo);
-    } catch (e) {
-      if (mounted) setState(() => imsStatus = "Error fetching IMS info: $e");
-    }
-  }
+  // Future<void> _fetch_imsStatus() async {
+  //   try {
+  //     if (_cellData == null) {
+  //       if (mounted) setState(() => _imsStatus = null);
+  //       return;
+  //     }
+  //     String imsInfo = await imsHelper.getNetworkType(_cellData!);
+  //     if (imsInfo == "PERMISSION_DENIED") {
+  //       setState(() => _imsStatus = null);
+  //       return;
+  //     }
+  //     // log("IMS Info: $imsInfo");
+  //     if (mounted) setState(() => _imsStatus = imsInfo);
+  //   } catch (e) {
+  //     if (mounted) setState(() => _imsStatus = "Error fetching IMS info: $e");
+  //   }
+  // }
 
   Future<void> _fetchNetworkInfo() async {
     try {
@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _cellData = cells;
           _statusMessage = cells.toString();
+          _imsStatus = cells.imsStatus;
         });
       }
     } catch (e) {
@@ -170,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(width: 10),
                           Image.asset(
-                            getImsIcon(imsStatus),
+                            getImsIcon(_imsStatus, overlay: true),
                             // width: 65,
                             height: 60,
                           ),
@@ -330,14 +331,14 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    getImsIcon(imsStatus),
+                                    getImsIcon(_imsStatus),
                                     // width: 11.75,
                                     height: 20,
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    imsStatus != null
-                                        ? imsStatus!.replaceFirst(
+                                    _imsStatus != null
+                                        ? _imsStatus!.replaceFirst(
                                             "VoWiFi",
                                             "Wi-Fi Calling",
                                           )

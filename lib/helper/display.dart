@@ -184,9 +184,9 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
         return 'assets/images/NetworkIcons/VoWiFi_Overlay.png';
       }
       return 'assets/images/NetworkIcons/VoWiFi.png';
-    case '3G' || 'UMTS' || 'HSPA' || 'HSDPA':
+    case '3G' || '3(UMTS)' || '11(HSPA)' || '9(HSDPA)':
       return 'assets/images/NetworkIcons/3G.png';
-    case '2G' || 'GSM' || 'GPRS' || 'EDGE':
+    case '2G' || '16(GSM)' || '1(GPRS)' || '2(EDGE)':
       return 'assets/images/NetworkIcons/2G.png';
     default:
       return 'assets/images/NetworkIcons/NoVoice.png';

@@ -108,7 +108,7 @@ class _OverlayAppState extends State<OverlayApp> {
   Timer? _timer;
 
   CellData? _cellData;
-  String? imsStatus;
+  String? _imsStatus;
 
   String _statusMessage = "Initializing...";
 
@@ -119,39 +119,35 @@ class _OverlayAppState extends State<OverlayApp> {
   }
 
   Future<void> _initTimer() async {
-    _timer = Timer.periodic(const Duration(milliseconds: 1800), (timer) {
-      _fetchNetworkInfo();
-      _fetchImsStatus();
+    _timer = Timer.periodic(const Duration(milliseconds: 1800), (timer) async {
+      await _fetchNetworkInfo();
+      // await _fetch_imsStatus();
     });
   }
 
-  Future<void> _fetchImsStatus() async {
-    try {
-      if (_cellData == null) {
-        if (mounted) setState(() => imsStatus = null);
-        return;
-      }
-      String imsInfo = await imsHelper
-          .getNetworkType(_cellData!)
-          .timeout(const Duration(milliseconds: 3000));
-      log("Fetched IMS info: $imsInfo");
-      if (imsInfo == "PERMISSION_DENIED") {
-        setState(() => imsStatus = null);
-        return;
-      }
-      // log("IMS Info: $imsInfo");
-      if (mounted) setState(() => imsStatus = imsInfo);
-    } catch (e) {
-      if (mounted) setState(() => imsStatus = "Error fetching IMS info: $e");
-    }
-  }
+  // Future<void> _fetch_imsStatus() async {
+  //   try {
+  //     if (_cellData == null) {
+  //       if (mounted) setState(() => _imsStatus = null);
+  //       return;
+  //     }
+  //     String imsInfo = await imsHelper.getNetworkType(_cellData!);
+  //     log("Fetched IMS info: $imsInfo");
+  //     if (imsInfo == "PERMISSION_DENIED") {
+  //       setState(() => _imsStatus = null);
+  //       return;
+  //     }
+  //     // log("IMS Info: $imsInfo");
+  //     if (mounted) setState(() => _imsStatus = imsInfo);
+  //   } catch (e) {
+  //     if (mounted) setState(() => _imsStatus = "Error fetching IMS info: $e");
+  //   }
+  // }
 
   Future<void> _fetchNetworkInfo() async {
     try {
       // 1. Get raw cell list from the plugin
-      CellData cells = await getCellInfo().timeout(
-        const Duration(milliseconds: 1500),
-      );
+      CellData cells = await getCellInfo();
 
       // 2. Process data manually
       // _processCells(cells);
@@ -161,6 +157,7 @@ class _OverlayAppState extends State<OverlayApp> {
         setState(() {
           _cellData = cells;
           _statusMessage = cells.toString();
+          _imsStatus = cells.imsStatus;
         });
       }
     } catch (e) {
@@ -287,15 +284,15 @@ class _OverlayAppState extends State<OverlayApp> {
                   // ],
                   SmartInvert(
                     child: Image.asset(
-                      getImsIcon(imsStatus, overlay: true),
+                      getImsIcon(_imsStatus, overlay: true),
                       fit: BoxFit.cover,
                       height: 12,
                     ),
                   ),
                   // SizedBox(width: 3),
                   // Text(
-                  //   imsStatus != null
-                  //       ? imsStatus!.replaceFirst("VoWiFi", "Wi-Fi Calling")
+                  //   _imsStatus != null
+                  //       ? _imsStatus!.replaceFirst("VoWiFi", "Wi-Fi Calling")
                   //       : "No IMS info",
                   //   style: TextStyle(color: Colors.white, fontSize: 11.5),
                   // ),

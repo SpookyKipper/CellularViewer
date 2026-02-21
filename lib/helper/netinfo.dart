@@ -32,6 +32,7 @@ class CellData {
   final String carrierName;
   final String mvnoName;
   final bool isImsRegistered;
+  final String imsStatus;
 
   CellData({
     required this.networkType,
@@ -53,6 +54,7 @@ class CellData {
     required this.carrierName,
     required this.mvnoName,
     required this.isImsRegistered,
+    required this.imsStatus,
   });
 
   @override
@@ -63,7 +65,8 @@ class CellData {
 
 Future<CellData> getCellInfo() async {
   try {
-    String? cellInfo = await CellInfo.getCellInfo; //.timeout(const Duration(milliseconds: 500), onTimeout: () => "timeout");
+    String? cellInfo = await CellInfo
+        .getCellInfo; //.timeout(const Duration(milliseconds: 500), onTimeout: () => "timeout");
     if (cellInfo == null) return Future.error("Cell info is null");
     // log(cellInfo);
 
@@ -74,7 +77,24 @@ Future<CellData> getCellInfo() async {
     }
 
     final List<dynamic> cellDataList = parsedCellInfo['cellDataList'];
-    if (cellDataList.isEmpty)  return CellData(networkType: "N/A", rsrp: 2683662, sinr: 2683662, rsrq: 2683662, dataConnStatus: -1, nsaStatus: "no", mccmnc: "00000", carrierName: "N/A", mvnoName: "N/A", isImsRegistered: false);
+    final Map serviceStateInfo =
+        await ServiceStateService.getAllInfoFromSerivceState();
+
+    if (cellDataList.isEmpty) {
+      return CellData(
+        networkType: "N/A",
+        rsrp: 2683662,
+        sinr: 2683662,
+        rsrq: 2683662,
+        dataConnStatus: -1,
+        nsaStatus: "no",
+        mccmnc: "00000",
+        carrierName: "N/A",
+        mvnoName: "N/A",
+        isImsRegistered: false,
+        imsStatus: serviceStateInfo['voiceTechnology'],
+      );
+    }
 
     // if (cellDataList.isEmpty) return Future.error("Cell data list is empty");
 
@@ -102,8 +122,6 @@ Future<CellData> getCellInfo() async {
     } else {
       data = -1;
     }
-    final Map serviceStateInfo =
-        await ServiceStateService.getAllInfoFromSerivceState();
 
     final bool usingCa = serviceStateInfo["usingCa"];
     // if (!usingCa) {
@@ -142,14 +160,23 @@ Future<CellData> getCellInfo() async {
         carrierName,
         mvnoName,
         isImsRegistered,
+        serviceStateInfo['voiceTechnology'],
         nsaStatus,
       );
     } else if (type == 'NR') {
       // 5G SA
-      return processNrCellInfo(parsedCellInfo, data, usingCa, cpu, bandwidths, mccmnc,
+      return processNrCellInfo(
+        parsedCellInfo,
+        data,
+        usingCa,
+        cpu,
+        bandwidths,
+        mccmnc,
         carrierName,
         mvnoName,
-        isImsRegistered);
+        isImsRegistered,
+        serviceStateInfo['voiceTechnology']
+      );
     } else {
       return Future.error("Unsupported cell type: $type");
     }
@@ -169,6 +196,7 @@ CellData processLteCellInfo(
   String carrierName,
   String mvnoName,
   bool isImsRegistered,
+  String imsStatus,
   String nsaStatus,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
@@ -337,8 +365,9 @@ CellData processLteCellInfo(
     dataConnStatus: dataConnStatus,
     mccmnc: mccmnc,
     carrierName: carrierName,
-    mvnoName: mvnoName, 
+    mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
+    imsStatus: imsStatus,
     nsaStatus: nsaStatus,
 
     // detailedNetworkType: detailedNetworkType,
@@ -355,6 +384,7 @@ CellData processNrCellInfo(
   String carrierName,
   String mvnoName,
   bool isImsRegistered,
+  String imsStatus,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -427,8 +457,9 @@ CellData processNrCellInfo(
     // detailedNetworkType: detailedNetworkType,
     mccmnc: mccmnc,
     carrierName: carrierName,
-    mvnoName: mvnoName, 
+    mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
+    imsStatus: imsStatus,
     nsaStatus: "no",
   );
 }

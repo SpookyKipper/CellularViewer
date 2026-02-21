@@ -1,12 +1,12 @@
 # <img src="assets/images/icon.png" height="40"> Cellular Viewer
 
 This app allows you to view detailed 4G/5G cellular network information on your Android device, including cell towers, signal strength, and carrier aggregation status. 
-It uses a modified version of [flutter_cell_info](https://github.com/SpookyKipper/flutter_cell_info) where most of it uses [NetMonster Core](https://github.com/mroczis/netmonster-core).
+It uses a modified version of [flutter_cell_info](https://github.com/SpookyKipper/flutter_cell_info), which makes use of [NetMonster Core](https://github.com/mroczis/netmonster-core) and also [Android ServiceState](https://android.googlesource.com/platform/frameworks/base/+/0e2d281/telephony/java/android/telephony/ServiceState.java).
 
 ## All Features
 - 4G LTE
 - 5G NR (SA/NSA)
-- IMS Status (UMTS/VoLTE/VoNR/WiFi Calling)
+- IMS Status (VoLTE/VoNR/WiFi Calling)
 - Carrier Aggregation information
 - Signal strength metrics (RSRP, RSRQ, SINR, TA - 4G only) with color-coded indicators
 - Debug mode to view raw data from the device
@@ -69,6 +69,13 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
     <tr>
       <td>mmWave</td>
       <td colspan="4">❓ Untested, not supported by test device</td>
+    </tr>
+    <tr>
+      <td>Carrier Info</td>
+      <td>✅ Good</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+      <td>❓ Untested</td>
     </tr>
     <tr>
       <td>IMS: VoWiFi</td>

@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 
 import 'package:cellular_viewer/overlay.dart';
 import 'package:cellular_viewer/pages/debug.dart';

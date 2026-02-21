@@ -1,9 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
-import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/widgets/widgets.dart';
 

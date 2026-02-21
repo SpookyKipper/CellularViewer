@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cellular_viewer/helper/netinfo.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,6 +22,7 @@ class _DebugPageState extends State<DebugPage> {
 
   String _debugMessage = "Initializing...";
 
+// ignore: unused_field
 Timer? _timer;
   Future<void> _initPermissionsAndTimer() async {
     // 1. Request Permissions
@@ -139,7 +138,7 @@ Processed Cell Info: $cellInfo
 
 ============================================
 
-Raw Cell Info: ${cellRawInfo ?? "N/A"}
+Raw Cell Info: $cellRawInfo
 
 ============================================
 

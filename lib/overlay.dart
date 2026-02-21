@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cellular_viewer/helper/display.dart';
-import 'package:cellular_viewer/helper/ims_helper.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
-import 'package:flutter_cell_info/flutter_cell_info.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/widgets/widgets.dart';
 import 'dart:math' hide log;
 import 'package:flutter/material.dart';
@@ -105,11 +101,13 @@ class _OverlayAppState extends State<OverlayApp> {
   }
 
   // Timer for 1.25s updates
+  // ignore: unused_field
   Timer? _timer;
 
   CellData? _cellData;
   String? _imsStatus;
 
+  // ignore: unused_field
   String _statusMessage = "Initializing...";
 
   @override

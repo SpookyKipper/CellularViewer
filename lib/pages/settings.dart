@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart' hide AppBar;
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:spookyservices/functions/theme.dart';
 import 'package:spookyservices/widgets/widgets.dart';
 import 'package:spookyservices/widgets/modal.dart';
 
@@ -38,12 +36,13 @@ class SettingsPage extends StatelessWidget {
                     text: "View Licenses",
                     onPressed: () async {
                       final info = await PackageInfo.fromPlatform();
-                      final _buildNumber = info.buildNumber;
-                      final _version = info.version;
+                      final buildNumber = info.buildNumber;
+                      final version = info.version;
                       showLicensePage(
+                        // ignore: use_build_context_synchronously
                         context: context,
                         applicationName: 'CellularViewer',
-                        applicationVersion: "$_version ($_buildNumber)",
+                        applicationVersion: "$version ($buildNumber)",
                         applicationIcon: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 100),
                           child: Image.asset("assets/images/icon.png"),

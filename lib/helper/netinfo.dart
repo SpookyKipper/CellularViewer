@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
-
-import 'package:cellular_viewer/helper/bandCalc.dart';
+import 'package:cellular_viewer/helper/band_calc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 
 ///////////////////////////////////////////////////////////
@@ -245,11 +243,14 @@ CellData processLteCellInfo(
       final cellData = cell['lte'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
           cpu !=
-              'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
+              'qcom') {
+        // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
+      }
       // Check if this cell is the same as the primary cell
-      if (cellData['bandLTE']['downlinkEarfcn'].toString() == primaryEarfcn)
+      if (cellData['bandLTE']['downlinkEarfcn'].toString() == primaryEarfcn) {
         continue;
+      }
 
       // Check for duplicates in the collected list using explicit value comparison
       // (List.contains fails with non-const Map literals in Dart)
@@ -257,11 +258,13 @@ CellData processLteCellInfo(
         (e) =>
             e['NAME'] == cellData['bandLTE']['name'] &&
             e['EARFCN'] == cellData['bandLTE']['downlinkEarfcn'].toString(),
-      ))
+      )) {
         continue;
+      }
 
-      if (cellData['bandLTE']['name'] == "")
+      if (cellData['bandLTE']['name'] == "") {
         continue; // Skip invalid bands (probably an NR  band)
+      }
       lteCaBands.add({
         'NAME': cellData['bandLTE']['name'],
         'EARFCN': cellData['bandLTE']['downlinkEarfcn'].toString(),
@@ -270,17 +273,20 @@ CellData processLteCellInfo(
       // Collect NR NSA CA bands from secondary cells
       final cellData = cell['nr'];
       // log(cellData['bandNR'].toString());
-      if (!cellData['connectionStatus'].contains('SecondaryConnection'))
+      if (!cellData['connectionStatus'].contains('SecondaryConnection')) {
         continue;
+      }
       // Check validity and duplicate for NR bands
       String nrName = getNrBandName(cellData['bandNR']['downlinkFrequency']);
       String nrArfcn = cellData['bandNR']['downlinkArfcn'].toString();
 
-      if (nrCaBands.any((e) => e['NAME'] == nrName && e['ARFCN'] == nrArfcn))
+      if (nrCaBands.any((e) => e['NAME'] == nrName && e['ARFCN'] == nrArfcn)) {
         continue;
+      }
 
-      if (nrName == "???" && nrCaBands.isNotEmpty)
+      if (nrName == "???" && nrCaBands.isNotEmpty) {
         continue; // ??? means invalid band if previous band can be detected correctly
+      }
 
       if (nsaRsrp == 2683662) {
         nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();
@@ -416,10 +422,13 @@ CellData processNrCellInfo(
       final cellData = cell['nr'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
           cpu !=
-              'qcom') // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
+              'qcom') {
+        // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
-      if (cellData['bandNR']['downlinkArfcn'].toString() == primaryArfcn)
+      }
+      if (cellData['bandNR']['downlinkArfcn'].toString() == primaryArfcn) {
         continue;
+      }
 
       // Check for duplicates using explicit comparison (List.contains fails for Map literals)
       if (nrCaBands.any(
@@ -427,8 +436,9 @@ CellData processNrCellInfo(
             e['NAME'] ==
                 getNrBandName(cellData['bandNR']['downlinkFrequency']) &&
             e['ARFCN'] == cellData['bandNR']['downlinkArfcn'].toString(),
-      ))
+      )) {
         continue;
+      }
 
       nrCaBands.add({
         'NAME': getNrBandName(cellData['bandNR']['downlinkFrequency']),

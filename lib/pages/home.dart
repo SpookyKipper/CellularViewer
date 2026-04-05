@@ -183,9 +183,9 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(width: 10),
                           Image.asset(
-                            getImsIcon(_imsStatus, overlay: true),
+                            getImsIcon(_imsStatus),
                             // width: 65,
-                            height: 60,
+                            height: 65,
                           ),
                           if (_cellData != null && _cellData!.isRoaming) ...[
                             SizedBox(width: 10),
@@ -367,7 +367,10 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    getImsIcon(_imsStatus),
+                                    getImsIcon(
+                                      _imsStatus,
+                                      overlay: true,
+                                    ), // use overlay icons because this is small
                                     // width: 11.75,
                                     height: 20,
                                   ),

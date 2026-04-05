@@ -178,10 +178,13 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
     case 'No Voice or VoLTE or CSFB':
       return 'assets/images/NetworkIcons/CSFB.png';
     case 'VoLTE':
+      if (overlay) return 'assets/images/NetworkIcons/VoLTE_Small.png';
       return 'assets/images/NetworkIcons/VoLTE.png';
     case 'VoNR':
+      if (overlay) return 'assets/images/NetworkIcons/VoNR_Small.png';
       return 'assets/images/NetworkIcons/VoNR.png';
     case 'VoWiFi':
+      if (overlay) return 'assets/images/NetworkIcons/VoWiFi_Small.png';
       return 'assets/images/NetworkIcons/VoWiFi.png';
     case '3G' || '3(UMTS)' || '11(HSPA)' || '9(HSDPA)':
       return 'assets/images/NetworkIcons/3G.png';

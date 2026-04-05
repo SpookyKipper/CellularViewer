@@ -35,6 +35,7 @@ class CellData {
   final String mvnoName;
   final bool isImsRegistered;
   final String imsStatus;
+  bool isRoaming;
 
   CellData({
     required this.networkType,
@@ -57,6 +58,7 @@ class CellData {
     required this.mvnoName,
     required this.isImsRegistered,
     required this.imsStatus,
+    required this.isRoaming,
   });
 
   @override
@@ -95,6 +97,7 @@ Future<CellData> getCellInfo() async {
         mvnoName: "N/A",
         isImsRegistered: false,
         imsStatus: serviceStateInfo['voiceTechnology'],
+        isRoaming: false,
       );
     }
 
@@ -163,6 +166,7 @@ Future<CellData> getCellInfo() async {
         mvnoName,
         isImsRegistered,
         serviceStateInfo['voiceTechnology'],
+        serviceStateInfo['isRoaming'],
         nsaStatus,
       );
     } else if (type == 'NR') {
@@ -178,6 +182,7 @@ Future<CellData> getCellInfo() async {
         mvnoName,
         isImsRegistered,
         serviceStateInfo['voiceTechnology'],
+        serviceStateInfo['isRoaming'],
       );
     } else {
       return Future.error("Unsupported cell type: $type");
@@ -199,6 +204,7 @@ CellData processLteCellInfo(
   String mvnoName,
   bool isImsRegistered,
   String imsStatus,
+  bool isRoaming,
   String nsaStatus,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['lte'];
@@ -377,6 +383,7 @@ CellData processLteCellInfo(
     mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
     imsStatus: imsStatus,
+    isRoaming: isRoaming,
     nsaStatus: nsaStatus,
 
     // detailedNetworkType: detailedNetworkType,
@@ -394,6 +401,7 @@ CellData processNrCellInfo(
   String mvnoName,
   bool isImsRegistered,
   String imsStatus,
+  bool isRoaming,
 ) {
   Map<String, dynamic> cellDataList = data['primaryCellList'][0]['nr'];
 
@@ -472,6 +480,7 @@ CellData processNrCellInfo(
     mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
     imsStatus: imsStatus,
+    isRoaming: isRoaming,
     nsaStatus: "no",
   );
 }

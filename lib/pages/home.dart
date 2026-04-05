@@ -187,6 +187,14 @@ class _HomePageState extends State<HomePage> {
                             // width: 65,
                             height: 60,
                           ),
+                          if (_cellData != null && _cellData!.isRoaming) ...[
+                            SizedBox(width: 10),
+                            Image.asset(
+                              'assets/images/NetworkIcons/Roaming.png',
+                              // width: 65,
+                              height: 65,
+                            ),
+                          ],
                         ],
                       ),
                       SizedBox(height: 10),
@@ -206,6 +214,22 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                                   textAlign: TextAlign.center,
                                   "[5G NSA] This is an anchor band.",
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+
+                        if (_cellData != null && _cellData!.isRoaming) ...[
+                          SizedBox(height: 5),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  "Roaming outside home carrier.",
                                 ),
                               ),
                             ],
@@ -266,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "MVNO",
+                                      "Brand",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

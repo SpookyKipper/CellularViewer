@@ -19,10 +19,14 @@ class CellData {
   final List<String> nrCcBands; // e.g. 3500, 4900
   final double rsrp;
   final double rsrq;
-  final double sinr; // or SNR for 4G
+  double sinr; // or SNR for 4G
+  int sinrModCount =
+      0; // Count of consecutive times SINR has been kept old due to suspected invalid data
   final double nsaRsrp;
   final double nsaRsrq;
-  final double nsaSinr;
+  double nsaSinr;
+  int nsaSinrModCount =
+      0; // Count of consecutive times NSA SINR has been kept old due to suspected invalid data
   final double ta; // 4G only
   final int dataConnStatus; // -1: unknown, 0: idle, 1: connecting, 2: connected
   final String nsaStatus; // no, anchor, connected
@@ -173,7 +177,7 @@ Future<CellData> getCellInfo() async {
         carrierName,
         mvnoName,
         isImsRegistered,
-        serviceStateInfo['voiceTechnology']
+        serviceStateInfo['voiceTechnology'],
       );
     } else {
       return Future.error("Unsupported cell type: $type");
@@ -242,8 +246,7 @@ CellData processLteCellInfo(
       // Collect LTE CA bands from secondary cells, no need to check if CA is not used by ServiceState
       final cellData = cell['lte'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
-          cpu !=
-              'qcom') {
+          cpu != 'qcom') {
         // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
       }
@@ -421,8 +424,7 @@ CellData processNrCellInfo(
       // minus 1 for main band
       final cellData = cell['nr'];
       if (!cellData['connectionStatus'].contains('SecondaryConnection') &&
-          cpu !=
-              'qcom') {
+          cpu != 'qcom') {
         // Qualcomm reports NoneConnection even when connected, now solely reling on usingCa for qcom
         continue;
       }

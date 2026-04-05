@@ -7,7 +7,7 @@ String getNetworkIcon(CellData? cellData) {
   }
   if (cellData.lteCcCount == 0 && cellData.nrCcCount == 0) {
     return "assets/images/NetworkIcons/NoSignal.png";
-  } 
+  }
   switch (cellData.networkType) {
     case '3G':
       return 'assets/images/NetworkIcons/3G.png';
@@ -73,7 +73,7 @@ String getDescription(CellData? cellData) {
   }
   if (cellData.lteCcCount == 0 && cellData.nrCcCount == 0) {
     return "No Signal";
-  } 
+  }
   switch (cellData.networkType) {
     case '3G':
       return 'Connected to a 3G Network';
@@ -129,14 +129,16 @@ String getNetworkIcon4G(CellData? cellData, {bool overlay = false}) {
   }
   if (cellData.lteCcCount == 0) {
     return "assets/images/NetworkIcons/NoSignal.png";
-  } 
+  }
 
   if (overlay) {
-    if (cellData.nsaStatus == 'connected' && cellData.nrCcCount == 0) {
-      return 'assets/images/NetworkIcons/4GPlus_NSAAnchor_Overlay.png';
-    }
-    if (cellData.nsaStatus == 'anchor' && cellData.nrCcCount == 0) {
-      return 'assets/images/NetworkIcons/4G_NSAAnchor_Overlay.png';
+    if ((cellData.nsaStatus == 'anchor' || cellData.nsaStatus == 'connected') &&
+        cellData.nrCcCount == 0) {
+      if (cellData.lteCcCount > 1) {
+        return 'assets/images/NetworkIcons/4GPlus_NSAAnchor_Overlay.png';
+      } else if (cellData.lteCcCount == 1) {
+        return 'assets/images/NetworkIcons/4G_NSAAnchor_Overlay.png';
+      }
     }
   }
 
@@ -155,7 +157,7 @@ String getNetworkIcon5G(CellData? cellData) {
 
   if (cellData.nrCcCount == 0) {
     return "assets/images/NetworkIcons/NoSignal.png";
-  } 
+  }
 
   if (cellData.nrCcCount > 1) {
     return 'assets/images/NetworkIcons/5GPlus.png';
@@ -221,7 +223,7 @@ Widget getRsrpDisplay(double rsrp) {
   return Text(displayText, style: TextStyle(color: color));
 }
 
-Widget getSinrDisplay(double sinr) {
+Widget getSinrDisplay(double sinr, int sinrModCount) {
   if (sinr == 2683662) {
     return Text("-", style: TextStyle(color: Colors.grey));
   }
@@ -248,7 +250,10 @@ Widget getSinrDisplay(double sinr) {
     // > 26 dB
     color = const Color.fromARGB(255, 110, 209, 255);
   }
-  return Text("${sinr.toInt()} dB", style: TextStyle(color: color));
+  return Text(
+    "${"*" * sinrModCount}${sinr.toInt()} dB",
+    style: TextStyle(color: color),
+  );
 }
 
 Widget getRsrqDisplay(double rsrq) {

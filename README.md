@@ -9,7 +9,12 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
 - IMS Status (VoLTE/VoNR/WiFi Calling)
 - Carrier Aggregation information
 - Signal strength metrics (RSRP, RSRQ, SINR, TA - 4G only) with color-coded indicators
+- Roaming Status
+- Overlay mode for continuous band info monitoring while on other apps
 - Debug mode to view raw data from the device
+- ⚠️ This app does NOT work under 2G and 3G networks
+
+- <details><summary>⚠️ Newer versions of the app does NOT work on legacy Android devices, though exact versions unknown, fixed planned</summary>Track it in https://github.com/SpookyKipper/CellularViewer/issues/4</details>
 
 ## Tested Systems
 
@@ -33,7 +38,7 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
       <td>4G LTE</td>
       <td>✅ Good</td>
       <td>✅ Good</td>
-      <td>✅ Good</td>
+      <td><details><summary>❌ Broken</summary> - Only broken in newer versions, older ones work<br> - Likely due to old Android APIs not being called in newer versions for optimization instead of a chip imcompatiblity<br> - Fix planned but no ETA, not high priority (https://github.com/SpookyKipper/CellularViewer/issues/4)</details></td>
       <td>❓ Untested</td>
     </tr>
     <tr>
@@ -61,7 +66,7 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
     </tr>
     <tr>
       <td>NR CA (NSA)</td>
-      <td>❗ No band info, guess CC Count</td>
+      <td><details><summary>❗ No band info, guess CC Count</summary> - Sometimes it can grab a secondary band, but disappears quickly. In these cases it will be displayed while available.<br> - Accuracy of it is unknown but it seems to be mostly correct</details></td>
       <td>❌ Unsupported</td>
       <td>---</td>
       <td>❓ Untested</td>
@@ -75,6 +80,13 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
       <td>✅ Good</td>
       <td>✅ Good</td>
       <td>❓ Untested</td>
+      <td>❓ Untested</td>
+    </tr>
+    <tr>
+      <td>Roaming Status</td>
+      <td>✅ Good</td>
+      <td>❓ Untested</td>
+      <td><details><summary>✅ Good</summary>Indepdent on & can be reliably detected even without 4G info</details></td>
       <td>❓ Untested</td>
     </tr>
     <tr>
@@ -98,6 +110,7 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
       <td>---</td>
       <td>❓ Untested</td>
     </tr>
+    
   </tbody>
 </table>
 

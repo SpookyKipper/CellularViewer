@@ -182,9 +182,6 @@ String getImsIcon(String? imsStatus, {overlay = false}) {
     case 'VoNR':
       return 'assets/images/NetworkIcons/VoNR.png';
     case 'VoWiFi':
-      if (overlay) {
-        return 'assets/images/NetworkIcons/VoWiFi_Overlay.png';
-      }
       return 'assets/images/NetworkIcons/VoWiFi.png';
     case '3G' || '3(UMTS)' || '11(HSPA)' || '9(HSDPA)':
       return 'assets/images/NetworkIcons/3G.png';

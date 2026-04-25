@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(width: 5),
                                   Text(
                                     _cellData != null
-                                        ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"
+                                        ? "${_cellData!.nrCcBands.join(" + ")} ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}" // if ccCount is 999, it means CA is used but CC count is unreliable, so show [CA+] instead of (999CC)
                                         : "Loading...",
                                   ),
                                 ],

@@ -106,10 +106,18 @@ Future<CellData> getCellInfo() async {
     final String mccmnc = "${cellDataList[0]["mcc"]}${cellDataList[0]["mnc"]}";
 
     String cpu;
+
     if (cellDataList[0]["HARDWARE"] == "qcom") {
       cpu = "qcom";
     } else {
       cpu = "unknown";
+    }
+
+    String manufacturer;
+    if (cellDataList[0]["MANUFACTURER"] != null) {
+      manufacturer = cellDataList[0]["MANUFACTURER"];
+    } else {
+      manufacturer = "unknown";
     }
 
     // final String detailedNetworkType = await CellService.getDetailedNetworkType();
@@ -176,6 +184,7 @@ Future<CellData> getCellInfo() async {
         data,
         usingCa,
         cpu,
+        manufacturer,
         bandwidths,
         mccmnc,
         carrierName,
@@ -395,6 +404,7 @@ CellData processNrCellInfo(
   int dataConnStatus,
   bool usingCa,
   String cpu,
+  String manufacturer,
   List<double> bandwidths,
   String mccmnc,
   String carrierName,
@@ -415,7 +425,9 @@ CellData processNrCellInfo(
 
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
   int maxCcCount = bandwidths.length;
-  if (usingCa == true && maxCcCount < 2) {
+  if ((usingCa == true && maxCcCount < 2) ||
+      (cpu == 'qcom' && manufacturer.toLowerCase().contains('xiaomi'))) {
+    // POCO Snapdragon does not give BW info on NR SA
     // No limit if CA is used but bandwidth info is unreliable
     maxCcCount = 999;
   }
@@ -466,9 +478,17 @@ CellData processNrCellInfo(
     //     "Warning: NR CC Count (${nrCcBands.length}) exceeds max CC Count ($maxCcCount). Truncating to max CC Count.");
     nrCcBands.removeRange(maxCcCount, nrCcBands.length);
   }
+
+  int nrCcCount;
+  if (usingCa && maxCcCount == 999) {
+    nrCcCount =
+        maxCcCount; // ccCount 999 will only display [CA] without CC count
+  } else {
+    nrCcCount = nrCcBands.length;
+  }
   return CellData(
     networkType: "SA",
-    nrCcCount: nrCcBands.length,
+    nrCcCount: nrCcCount,
     nrCcBands: nrCcBands,
     rsrp: rsrp,
     sinr: sinr,

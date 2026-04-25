@@ -250,7 +250,7 @@ class _OverlayAppState extends State<OverlayApp> {
                     SizedBox(width: 3),
                     Text(
                       _cellData != null
-                          ? "${_cellData!.nrCcBands.join(" + ")} (${_cellData!.nrCcCount}CC)"
+                          ? "${_cellData!.nrCcBands.join(" + ")} ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}"
                           : "Loading...",
                       style: TextStyle(color: Colors.white, fontSize: 11.5),
                     ),

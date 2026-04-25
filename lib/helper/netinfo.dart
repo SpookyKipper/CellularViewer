@@ -426,7 +426,9 @@ CellData processNrCellInfo(
   List<Map<String, String>> nrCaBands = []; // e.g. [{NAME, EARFCN}, ...]
   int maxCcCount = bandwidths.length;
   if ((usingCa == true && maxCcCount < 2) ||
-      (cpu == 'qcom' && manufacturer.toLowerCase().contains('xiaomi'))) {
+      (cpu == 'qcom' &&
+          manufacturer.toLowerCase().contains('xiaomi') &&
+          maxCcCount == 0)) {
     // POCO Snapdragon does not give BW info on NR SA
     // No limit if CA is used but bandwidth info is unreliable
     maxCcCount = 999;

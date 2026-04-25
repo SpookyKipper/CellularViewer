@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cellular_viewer/helper/display.dart';
 import 'package:cellular_viewer/helper/netinfo.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spookyservices/functions/theme.dart';
 import 'package:spookyservices/spookyservices.dart';
@@ -94,6 +95,12 @@ class _HomePageState extends State<HomePage> {
           }
 
           _cellData = cells;
+
+          if (_cellData != null && !_cellData!.accurateCarrierName) {
+            context.go(
+              '/sync-net-op',
+            ); // Go to sync page if carrier name is not accurate
+          }
           _statusMessage = cells.toString();
           _imsStatus = cells.imsStatus;
         });

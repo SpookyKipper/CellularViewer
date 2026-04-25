@@ -1,7 +1,7 @@
 name: cellular_viewer
 description: "View cellular network information on your device and put them on an overlay!"
 publish_to: "none"
-version: 0.0.7+11
+version: 0.0.8+12
 
 environment:
   sdk: ^3.8.0

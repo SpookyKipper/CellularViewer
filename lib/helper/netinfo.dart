@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cellular_viewer/boxes/network_operator.dart';
 import 'package:cellular_viewer/helper/band_calc.dart';
 import 'package:flutter_cell_info/flutter_cell_info.dart';
 
@@ -32,6 +33,8 @@ class CellData {
   final String nsaStatus; // no, anchor, connected
   final String mccmnc;
   final String carrierName;
+  final bool
+  accurateCarrierName; // whether the carrier name is accurately detected (not "N/A" or fallback)
   final String mvnoName;
   final bool isImsRegistered;
   final String imsStatus;
@@ -55,6 +58,7 @@ class CellData {
     required this.nsaStatus,
     required this.mccmnc,
     required this.carrierName,
+    required this.accurateCarrierName,
     required this.mvnoName,
     required this.isImsRegistered,
     required this.imsStatus,
@@ -94,6 +98,7 @@ Future<CellData> getCellInfo() async {
         nsaStatus: "no",
         mccmnc: "00000",
         carrierName: "N/A",
+        accurateCarrierName: true,
         mvnoName: "N/A",
         isImsRegistered: false,
         imsStatus: serviceStateInfo['voiceTechnology'],
@@ -146,8 +151,37 @@ Future<CellData> getCellInfo() async {
     final List<double> bandwidths = serviceStateInfo["bandwidths"];
     final bool lteAnchor = serviceStateInfo["lteAnchor"];
     final bool nrNsa = serviceStateInfo["nrNsa"];
-    final String carrierName = serviceStateInfo["carrierName"];
-    final String mvnoName = serviceStateInfo["mvnoName"];
+
+    String mvnoName = serviceStateInfo["mvnoName"];
+
+    String? carrierName = HiveNetworkOperatorService().getFriendlyName(mccmnc);
+    String carrierNameFromServiceState = serviceStateInfo["carrierName"];
+
+    final bool accurateCarrierName =
+        carrierName != null && carrierName != "N/A";
+    carrierName ??=
+        carrierNameFromServiceState; // fallback if not found in ObjectBox
+
+    bool checkMvno() {
+      String pCarrierName = carrierName!
+          .toLowerCase()
+          .replaceAll("priority", "")
+          .replaceAll("supreme", "")
+          .replaceAll("vip", "");
+      String pCarrierNameSs = carrierNameFromServiceState
+          .toLowerCase()
+          .replaceAll("priority", "")
+          .replaceAll("supreme", "")
+          .replaceAll("vip", "");
+
+      return !pCarrierName.contains(pCarrierNameSs) ||
+          !pCarrierNameSs.toLowerCase().contains(pCarrierName.toLowerCase());
+    }
+
+    if (mvnoName == "" && checkMvno()) {
+      mvnoName = carrierNameFromServiceState;
+    }
+
     final bool isImsRegistered = serviceStateInfo["imsRegistered"];
     String nsaStatus;
     if (nrNsa) {
@@ -171,6 +205,7 @@ Future<CellData> getCellInfo() async {
         bandwidths,
         mccmnc,
         carrierName,
+        accurateCarrierName,
         mvnoName,
         isImsRegistered,
         serviceStateInfo['voiceTechnology'],
@@ -188,6 +223,7 @@ Future<CellData> getCellInfo() async {
         bandwidths,
         mccmnc,
         carrierName,
+        accurateCarrierName,
         mvnoName,
         isImsRegistered,
         serviceStateInfo['voiceTechnology'],
@@ -210,6 +246,7 @@ CellData processLteCellInfo(
   List<double> bandwidths,
   String mccmnc,
   String carrierName,
+  bool accurateCarrierName,
   String mvnoName,
   bool isImsRegistered,
   String imsStatus,
@@ -389,6 +426,7 @@ CellData processLteCellInfo(
     dataConnStatus: dataConnStatus,
     mccmnc: mccmnc,
     carrierName: carrierName,
+    accurateCarrierName: accurateCarrierName,
     mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
     imsStatus: imsStatus,
@@ -408,6 +446,7 @@ CellData processNrCellInfo(
   List<double> bandwidths,
   String mccmnc,
   String carrierName,
+  bool accurateCarrierName,
   String mvnoName,
   bool isImsRegistered,
   String imsStatus,
@@ -499,6 +538,7 @@ CellData processNrCellInfo(
     // detailedNetworkType: detailedNetworkType,
     mccmnc: mccmnc,
     carrierName: carrierName,
+    accurateCarrierName: accurateCarrierName,
     mvnoName: mvnoName,
     isImsRegistered: isImsRegistered,
     imsStatus: imsStatus,

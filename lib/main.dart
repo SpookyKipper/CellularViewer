@@ -1,14 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
-
 import 'package:cellular_viewer/overlay.dart';
 import 'package:cellular_viewer/pages/debug.dart';
 import 'package:cellular_viewer/pages/overlay.dart';
+import 'package:cellular_viewer/pages/sync_net_op.dart';
 import 'package:dynamik_theme/dynamik_theme.dart';
 import 'package:cellular_viewer/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cellular_viewer/pages/settings.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:spookyservices/theme/colors.dart' as theme;
 import 'package:spookyservices/theme/RouteDesign.dart';
 
@@ -30,6 +31,7 @@ final Map<String, ShellConfig> routeConfig = {
   '/settings': ShellConfig(title: "Settings", icon: Icons.settings),
   '/debug': ShellConfig(title: "Debug", icon: Icons.bug_report),
   '/overlay': ShellConfig(title: "Overlay", icon: Icons.window),
+  '/sync-net-op': ShellConfig(title: "Syncing...", icon: Icons.sync),
 };
 
 final router = GoRouter(
@@ -80,6 +82,15 @@ final router = GoRouter(
             child: DebugPage(),
           ),
         ),
+        GoRoute(
+          path: '/sync-net-op',
+          pageBuilder: (context, state) => buildPageWithTransition(
+            context: context,
+            state: state,
+            routeConfig: routeConfig,
+            child: SyncNetOpPage(),
+          ),
+        ),
       ],
     ),
   ],
@@ -87,6 +98,12 @@ final router = GoRouter(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Hive for Flutter
+  await Hive.initFlutter();
+
+  // Open the box (database) to hold the operator strings
+  await Hive.openBox<String>('operatorsBox');
+
   runApp(MyApp());
 }
 

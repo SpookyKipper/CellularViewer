@@ -26,12 +26,18 @@ dependencies:
   clipboard: ^3.0.14
   fluttertoast: ^9.0.0
   flutter_overlay_window: ^0.5.0
+  http: ^1.6.0
+  xml: ^6.6.1
+  path_provider: ^2.1.5
+  hive_flutter: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+  build_runner: ^2.14.1
+  objectbox_generator: any
 
 flutter:
   uses-material-design: true

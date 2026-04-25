@@ -20,6 +20,12 @@ class SettingsPage extends StatelessWidget {
                   context.push('/debug');
                 },
               ),
+              Button(
+                text: "Update Network Operator Data",
+                onPressed: () async {
+                  context.go('/sync-net-op');
+                },
+              ),
               SizedBox(height: 5),
               Button(
                 text: "Configure Overlay Settings",

@@ -18,101 +18,119 @@ It uses a modified version of [flutter_cell_info](https://github.com/SpookyKippe
 
 ## Tested Systems
 
-<table border="1">
-  <tbody>
-    <tr>
-      <td><strong>Modem</strong></td>
-      <td><strong>Modern 5G Exynos</strong></td>
-      <td><strong>Modern 5G Qualcomm</strong></td>
-      <td><strong>Legacy 4G Qualcomm</strong></td>
-      <td><strong>MediaTek</strong></td>
-    </tr>
-    <tr>
-      <td><strong>Test Device</strong></td>
-      <td><strong>Samsung A56 5G</strong></td>
-      <td><strong>Samsung S23+ (Friend)</strong></td>
-      <td><strong>Sony Xperia XZ</strong></td>
-      <td>---</td>
-    </tr>
-    <tr>
-      <td>4G LTE</td>
-      <td>✅ Good</td>
-      <td>✅ Good</td>
-      <td><details><summary>❌ Broken</summary> - Only broken in newer versions, older ones work<br> - Likely due to old Android APIs not being called in newer versions for optimization instead of a chip imcompatiblity<br> - Fix planned but no ETA, not high priority (https://github.com/SpookyKipper/CellularViewer/issues/4)</details></td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>LTE CA</td>
-      <td>✅ Good</td>
-      <td>✅ Good</td>
-      <td>❓ Untested</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>5G NR (SA/NSA)</td>
-      <td>✅ Good</td>
-      <td>❗ No band info; SA untested</td>
-      <td>---</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>NR CA (SA)</td>
-      <td><details><summary>🆗 Supported, minor issues</summary> - Might report CA as available when assigned but not actually connected (RRC IDLE) <br>
-        - Tested up to 2CA<br>
-        - Accurate Band Info</details></td>
-      <td>❓ Untested</td>
-      <td>---</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>NR CA (NSA)</td>
-      <td><details><summary>❗ No band info, guess CC Count</summary> - Sometimes it can grab a secondary band, but disappears quickly. In these cases it will be displayed while available.<br> - Accuracy of it is unknown but it seems to be mostly correct</details></td>
-      <td>❌ Unsupported</td>
-      <td>---</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>mmWave</td>
-      <td colspan="4">❓ Untested, not supported by test device</td>
-    </tr>
-    <tr>
-      <td>Carrier Info</td>
-      <td>✅ Good</td>
-      <td>✅ Good</td>
-      <td>❓ Untested</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>Roaming Status</td>
-      <td>✅ Good</td>
-      <td>❓ Untested</td>
-      <td><details><summary>✅ Good</summary>Indepdent on & can be reliably detected even without 4G info</details></td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>IMS: VoWiFi</td>
-      <td>✅ Good</td>
-      <td>✅ Good</td>
-      <td>❓ Untested</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>IMS: VoLTE</td>
-      <td>✅ Good</td>
-      <td>✅ Good</td>
-      <td>❓ Untested</td>
-      <td>❓ Untested</td>
-    </tr>
-    <tr>
-      <td>IMS: VoNR</td>
-      <td><details><summary>✅ Good</summary>Cannot detect half-baked deployments where it will actually fallback to VoLTE when connecting to call</details></td>
-      <td>❓ Untested</td>
-      <td>---</td>
-      <td>❓ Untested</td>
-    </tr>
-    
-  </tbody>
+<table style="width: 700px;" border="1">
+<tbody>
+<tr style="height: 41px;">
+<td style="height: 41px; width: 85px;"><strong>Modem</strong></td>
+<td style="height: 41px; width: 162px;"><strong>Samsung Exynos 5G</strong></td>
+<td style="height: 41px; width: 132px;"><strong>Xiaomi Qualcomm 5G</strong></td>
+<td style="height: 41px; width: 134.75px;"><strong>Samsung Qualcomm 5G</strong></td>
+<td style="height: 41px; width: 111.25px;"><strong>Sony Qualcomm 4G</strong></td>
+<td style="height: 41px; width: 72px;"><strong>MediaTek</strong></td>
+</tr>
+<tr style="height: 41px;">
+<td style="height: 41px; width: 85px;"><strong>Test Device</strong></td>
+<td style="height: 41px; width: 162px;"><strong>Samsung A56 5G</strong></td>
+<td style="height: 41px; width: 132px;"><strong>POCO F8 Pro</strong></td>
+<td style="height: 41px; width: 134.75px;"><strong>Samsung S23+ (Friend)</strong></td>
+<td style="height: 41px; width: 111.25px;"><strong>Sony Xperia XZ</strong></td>
+<td style="height: 41px; width: 72px;">---</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">4G LTE</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">✅ Good</td>
+<td style="height: 40px; width: 111.25px;"><details><summary>❌ Broken</summary> - Only broken in newer versions, older ones work<br /> - Likely due to old Android APIs not being called in newer versions for optimization instead of a chip imcompatiblity<br /> - Fix planned but no ETA, not high priority (https://github.com/SpookyKipper/CellularViewer/issues/4)</details></td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">LTE CA</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">✅ Good</td>
+<td style="height: 40px; width: 111.25px;">❓ Untested</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">5G NR (SA)</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">❓ Untested</td>
+<td style="height: 40px; width: 111.25px;">---</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">NR CA (SA)</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;"><details><summary>❗ Limited</summary> - Yes/no only<br />- no band info &amp; CC count</summary></details></td>
+<td style="height: 40px; width: 134.75px;">❓ Untested</td>
+<td style="height: 40px; width: 111.25px;">---</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">5G NR (NSA)</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">✅ Good</td>
+<td style="height: 40px; width: 134.75px;"><details><summary>❗ Limited</summary>- No band info</summary></details></td>
+<td style="height: 40px; width: 111.25px;">---</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 120px;">
+<td style="height: 120px; width: 85px;">NR CA (NSA)</td>
+<td style="height: 120px; width: 162px;"><details><summary>❗ Limited</summary>- No band info, guess CC Count<br /> - Sometimes it can grab a secondary band, but disappears quickly. In these cases it will be displayed while available.<br /> - Accuracy of it is unknown but it seems to be mostly correct</details></td>
+<td style="height: 120px; width: 132px;">&nbsp;❓ Untested</td>
+<td style="height: 120px; width: 134.75px;">❌ Unsupported</td>
+<td style="height: 120px; width: 111.25px;">---</td>
+<td style="height: 120px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 20px;">
+<td style="height: 20px; width: 85px;">mmWave</td>
+<td style="height: 20px; width: 612px;" colspan="5">❓ Untested, not supported by test device</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">Carrier Info</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">✅ Good</td>
+<td style="height: 40px; width: 111.25px;">❓ Untested</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">Roaming Status</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;❓ Untested</td>
+<td style="height: 40px; width: 134.75px;">❓ Untested</td>
+<td style="height: 40px; width: 111.25px;"><details><summary>✅ Good</summary>Indepdent on &amp; can be reliably detected even without 4G info</details></td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">VoWiFi</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">✅ Good</td>
+<td style="height: 40px; width: 111.25px;">❓ Untested</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">VoLTE</td>
+<td style="height: 40px; width: 162px;">✅ Good</td>
+<td style="height: 40px; width: 132px;">&nbsp;✅ Good</td>
+<td style="height: 40px; width: 134.75px;">✅ Good</td>
+<td style="height: 40px; width: 111.25px;">❓ Untested</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+<tr style="height: 40px;">
+<td style="height: 40px; width: 85px;">VoNR</td>
+<td style="height: 40px; width: 162px;"><details><summary>✅ Good</summary>Cannot detect half-baked deployments where it will actually fallback to VoLTE when connecting to call</details></td>
+<td style="height: 40px; width: 132px;">✅ Good</td>
+<td style="height: 40px; width: 134.75px;">❓ Untested</td>
+<td style="height: 40px; width: 111.25px;">---</td>
+<td style="height: 40px; width: 72px;">❓ Untested</td>
+</tr>
+</tbody>
 </table>
+<p>&nbsp;</p>
 
 
 

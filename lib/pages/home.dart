@@ -82,17 +82,17 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _prevCellData = _cellData; // Store previous data before updating
 
-          if (cells.nsaSinr >= 70) {
-            // If NSA SINR is invalid, keep previous valid SINR
-            cells.nsaSinr = _prevCellData?.nsaSinr ?? cells.nsaSinr;
-            cells.nsaSinrModCount += 1; // Increment modification count
-          }
+          // if (cells.nsaSinr >= 70) {
+          //   // If NSA SINR is invalid, keep previous valid SINR
+          //   cells.nsaSinr = _prevCellData?.nsaSinr ?? cells.nsaSinr;
+          //   cells.nsaSinrModCount += 1; // Increment modification count
+          // }
 
-          if (cells.sinr >= 70) {
-            // If SINR is invalid, keep previous valid SINR
-            cells.sinr = _prevCellData?.sinr ?? cells.sinr;
-            cells.sinrModCount += 1; // Increment modification count
-          }
+          // if (cells.sinr >= 70) {
+          //   // If SINR is invalid, keep previous valid SINR
+          //   cells.sinr = _prevCellData?.sinr ?? cells.sinr;
+          //   cells.sinrModCount += 1; // Increment modification count
+          // }
 
           _cellData = cells;
 

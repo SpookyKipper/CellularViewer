@@ -250,8 +250,12 @@ Widget getSinrDisplay(double sinr, int sinrModCount) {
     // > 26 dB
     color = const Color.fromARGB(255, 110, 209, 255);
   }
+  String returnText = "${sinr.toInt()} dB";
+  if (sinr == 100) {
+    returnText = ">25 dB";
+  }
   return Text(
-    "${"*" * sinrModCount}${sinr.toInt()} dB",
+    returnText,
     style: TextStyle(color: color),
   );
 }

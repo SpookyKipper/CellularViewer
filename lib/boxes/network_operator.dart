@@ -20,27 +20,30 @@ class HiveNetworkOperatorService {
     String name = rawName.trim();
 
     // Remove the exact suffixes if they appear at the end of the string
-    name = name.replaceAll(RegExp(r'\s+Data$'), '');
-    name = name.replaceAll(RegExp(r'\s+UT$'), '');
-    name = name.replaceAll(RegExp(r'\s+MMS$'), '');
-    name = name.replaceAll(RegExp(r'\s+IMS$'), '');
-    name = name.replaceAll(RegExp(r'\s+HOS$'), '');
-    name = name.replaceAll(RegExp(r'\s+NET$'), '');
-    name = name.replaceAll(RegExp(r'\s+WAP$'), '');
-    name = name.replaceAll(RegExp(r'\s+Gateway$'), '');
-    name = name.replaceAll(RegExp(r'\s+Internet$'), '');
-    name = name.replaceAll(RegExp(r'\s+INTERNET$'), '');
-    name = name.replaceAll(RegExp(r'\s+&amp;MMS$'), '');
-    name = name.replaceAll(RegExp(r'\s+&amp; MMS$'), '');
-    name = name.replaceAll(RegExp(r'\s+&MMS$'), '');
-    name = name.replaceAll(RegExp(r'\s+&Postpaid$'), '');
-    name = name.replaceAll(RegExp(r'\s+&Prepaid$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(Internet\)$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(Prepaid\)$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(IMS\)$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(XCAP\)$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(UT\)$'), '');
-    name = name.replaceAll(RegExp(r'\s+\(MMS\)$'), '');
+    name = [
+      ' Data',
+      ' UT',
+      ' MMS',
+      ' IMS',
+      ' HOS',
+      ' NET',
+      ' WAP',
+      ' Gateway',
+      ' Internet',
+      ' INTERNET',
+      ' &amp;MMS',
+      ' WAP&amp;MMS',
+      ' &amp; MMS',
+      ' &MMS',
+      ' &Postpaid',
+      ' &Prepaid',
+      ' (Internet)',
+      ' (Prepaid)',
+      ' (IMS)',
+      ' (XCAP)',
+      ' (UT)',
+      ' (MMS)',
+    ].fold(name, (n, s) => n.replaceAll(s, ''));
 
     // Apply exact matches from the custom overrides map
     if (_customOverrides.containsKey(name)) {

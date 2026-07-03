@@ -366,7 +366,7 @@ CellData processLteCellInfo(
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.removeWhere((e) => e.isEmpty);
 
-  if (nrCcBands.isNotEmpty && cpu == 'qcom') {
+  if (nrCcBands.isNotEmpty && maxLteCcCount == 1 && cpu == 'qcom') {
     maxLteCcCount = 999; // If NR is detected, LTE CA count is unreliable, so we don't limit it
   }
 

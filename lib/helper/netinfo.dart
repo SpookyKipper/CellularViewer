@@ -168,14 +168,18 @@ Future<CellData> getCellInfo() async {
           .replaceAll("priority", "")
           .replaceAll("supreme", "")
           .replaceAll("vip", "");
+
       String pCarrierNameSs = carrierNameFromServiceState
           .toLowerCase()
           .replaceAll("priority", "")
           .replaceAll("supreme", "")
-          .replaceAll("vip", "");
+          .replaceAll("vip", "")
+          .replaceAll("chn-ct", "China Telecom")
+          .replaceAll("chn-unicom", "China Unicom");
 
-      return !pCarrierName.contains(pCarrierNameSs) ||
-          !pCarrierNameSs.toLowerCase().contains(pCarrierName.toLowerCase());
+      // Contains either way, but not both, mark as not MVNO.
+      return !pCarrierName.contains(pCarrierNameSs) &&
+          !pCarrierNameSs.contains(pCarrierName);
     }
 
     if (mvnoName == "" && checkMvno()) {

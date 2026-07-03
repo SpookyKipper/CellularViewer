@@ -293,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
 
-                            if (_cellData != null && _cellData!.mvnoName != "")
+                            if (_cellData != null && !(_cellData!.isRoaming) &&  _cellData!.mvnoName != "")
                               Expanded(
                                 child: Column(
                                   children: [

@@ -295,7 +295,7 @@ CellData processLteCellInfo(
 
   List<double> lteBandwidths = bandwidths;
   lteBandwidths.retainWhere((bw) => bw <= 20); // No single LTE BW > 20MHz
-  final int maxLteCcCount = lteBandwidths.length;
+  int maxLteCcCount = lteBandwidths.length; // later will modify
 
   for (var cell in secondaryCellList) {
     if (usingCa && cell['type'] == 'LTE') {
@@ -365,6 +365,10 @@ CellData processLteCellInfo(
 
   final List<String> nrCcBands = nrCaBands.map((e) => e['NAME']!).toList();
   nrCcBands.removeWhere((e) => e.isEmpty);
+
+  if (nrCcBands.isNotEmpty && cpu == 'qcom') {
+    maxLteCcCount = 999; // If NR is detected, LTE CA count is unreliable, so we don't limit it
+  }
 
   if (lteCcBands.length > maxLteCcCount) {
     // Sanity check, should not happen

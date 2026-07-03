@@ -491,7 +491,7 @@ class _HomePageState extends State<HomePage> {
                                 _cellData!.nrCcCount >= 1) ...[
                               SizedBox(height: 5),
                               Text(
-                                "NSA Signal Strength",
+                                "5G NSA Signal Strength",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,

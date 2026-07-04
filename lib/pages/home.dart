@@ -142,33 +142,33 @@ class _HomePageState extends State<HomePage> {
             physics: const ClampingScrollPhysics(),
             children: [
               if (_cellData == null || _cellData!.dataConnStatus == 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: cLD(
-                        Theme.of(context).colorScheme.primaryContainer,
-                        Theme.of(context).colorScheme.onPrimary,
-                      ), // Color must be inside BoxDecoration
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Apply rounded corners
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 50,
-                        right: 50,
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Text(
-                        "Data service is DISCONNECTED\nInfo may be inaccurate.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       color: cLD(
+                //         Theme.of(context).colorScheme.primaryContainer,
+                //         Theme.of(context).colorScheme.onPrimary,
+                //       ), // Color must be inside BoxDecoration
+                //       borderRadius: BorderRadius.circular(
+                //         20,
+                //       ), // Apply rounded corners
+                //     ),
+                //     child: Padding(
+                //       padding: EdgeInsets.only(
+                //         left: 50,
+                //         right: 50,
+                //         top: 10,
+                //         bottom: 10,
+                //       ),
+                //       child: Text(
+                //         "Data service is DISCONNECTED\nInfo may be inaccurate.",
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(fontSize: 16, color: Colors.white),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Container(

@@ -347,6 +347,10 @@ CellData processLteCellInfo(
         continue; // ??? means invalid band if previous band can be detected correctly
       }
 
+      if (nrName == "???") {
+        nrName = "Connected";
+      }
+
       if (nsaRsrp == 2683662) {
         nsaRsrp = cellData['signalNR']['ssRsrp'].toDouble();
       }
@@ -367,7 +371,8 @@ CellData processLteCellInfo(
   nrCcBands.removeWhere((e) => e.isEmpty);
 
   if (nrCcBands.isNotEmpty && maxLteCcCount == 1 && cpu == 'qcom') {
-    maxLteCcCount = 999; // If NR is detected, LTE CA count is unreliable, so we don't limit it
+    maxLteCcCount =
+        999; // If NR is detected, LTE CA count is unreliable, so we don't limit it
   }
 
   if (lteCcBands.length > maxLteCcCount) {
@@ -408,6 +413,11 @@ CellData processLteCellInfo(
     // avoid overflow from unreliable bandwidth info
     // Heuristic for NR NSA without reported NR CCs
     nrCcCount = maxNrCcCount;
+  }
+
+  if (nrCcCount == 1 && nrCcBands[0] == "Connected") {
+    // Connected means no band detected, therefore CC count inaccurate
+    nrCcCount = -1;
   }
 
   int lteCcCount = lteCcBands.length;

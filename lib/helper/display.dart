@@ -161,7 +161,7 @@ String getNetworkIcon5G(CellData? cellData) {
 
   if (cellData.nrCcCount > 1) {
     return 'assets/images/NetworkIcons/5GPlus.png';
-  } else if (cellData.nrCcCount == 1) {
+  } else if (cellData.nrCcCount == 1 || cellData.nrCcCount == -1) {
     return 'assets/images/NetworkIcons/5G.png';
   }
   return 'assets/images/icon.png';
@@ -250,12 +250,8 @@ Widget getSinrDisplay(double sinr, int sinrModCount) {
     // > 26 dB
     color = const Color.fromARGB(255, 110, 209, 255);
   }
-  String returnText = "${sinr.toInt()} dB";
-  if (sinr == 100) {
-    returnText = ">25 dB";
-  }
   return Text(
-    returnText,
+    "${sinr.toInt()} dB",
     style: TextStyle(color: color),
   );
 }

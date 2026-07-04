@@ -82,17 +82,21 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _prevCellData = _cellData; // Store previous data before updating
 
-          // if (cells.nsaSinr >= 70) {
-          //   // If NSA SINR is invalid, keep previous valid SINR
-          //   cells.nsaSinr = _prevCellData?.nsaSinr ?? cells.nsaSinr;
-          //   cells.nsaSinrModCount += 1; // Increment modification count
-          // }
+          if (cells.nsaSinr >= 70) {
+            // If NSA SINR is invalid, keep previous valid SINR
+            cells.nsaSinr = _prevCellData?.nsaSinr ?? 2683662;
+            if (cells.nsaSinr != 2683662) {
+              cells.nsaSinrModCount = _prevCellData!.nsaSinrModCount + 1; // Increment modification count
+            }
+          }
 
-          // if (cells.sinr >= 70) {
-          //   // If SINR is invalid, keep previous valid SINR
-          //   cells.sinr = _prevCellData?.sinr ?? cells.sinr;
-          //   cells.sinrModCount += 1; // Increment modification count
-          // }
+          if (cells.sinr >= 70) {
+            // If SINR is invalid, keep previous valid SINR
+            cells.sinr = _prevCellData?.sinr ?? 2683662;
+            if (cells.sinr != 2683662) {
+              cells.sinrModCount = _prevCellData!.sinrModCount + 1; // Increment modification count
+            }
+          }
 
           _cellData = cells;
 
@@ -121,7 +125,7 @@ class _HomePageState extends State<HomePage> {
     //  FlutterOverlayWindow.closeOverlay();
     // print("Brightness: ${Theme.of(context).brightness}");
     if (Theme.of(context).brightness == Brightness.dark) {
-      setDarkMode(true); //for spookyservices
+      setDarkMode(true); // for spookyservices
       // Theme.of( context).copyWith(
       //   colorScheme: Theme.of(context).colorScheme.copyWith(
       //     brightness: Brightness.light,
@@ -336,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                            if (_cellData != null && _cellData!.nrCcCount >= 1)
+                            if (_cellData != null && _cellData!.nrCcBands.isNotEmpty)
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -348,7 +352,9 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(width: 5),
                                   Text(
                                     _cellData != null
-                                        ? "${_cellData!.nrCcBands.join(" + ")} ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}" // if ccCount is 999, it means CA is used but CC count is unreliable, so show [CA+] instead of (999CC)
+                                        ? "${_cellData!.nrCcBands.join(" + ")}${(_cellData!.nrCcCount == -1) ? "" : " ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}"}"
+                                         // if ccCount is 999, it means CA is used but CC count is unreliable, so show [CA+] instead of (999CC)
+                                         // if ccCount is -1, it means CC count inaccurate, dont show it.
                                         : "Loading...",
                                   ),
                                 ],

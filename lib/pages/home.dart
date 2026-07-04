@@ -476,7 +476,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       if (_cellData != null &&
                           _cellData!.networkType == "4G" &&
-                          _cellData!.nrCcCount >= 1) ...[
+                          (_cellData!.nrCcBands.isNotEmpty)) ...[
                         SizedBox(height: 5),
                         Text(
                           "5G NSA Signal Strength",

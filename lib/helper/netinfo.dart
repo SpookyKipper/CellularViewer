@@ -71,6 +71,8 @@ class CellData {
   }
 }
 
+
+
 Future<CellData> getCellInfo() async {
   try {
     String? cellInfo = await CellInfo
@@ -196,6 +198,16 @@ Future<CellData> getCellInfo() async {
       nsaStatus = "no";
     }
 
+    String voiceTechnology = serviceStateInfo["voiceTechnology"];
+    String dataTechnology = serviceStateInfo["dataTechnology"];
+    if (!(cpu == "qcom" && manufacturer.toLowerCase().contains("samsung"))) { 
+      if (dataTechnology == "LTE" && voiceTechnology == "NR") {
+        voiceTechnology = "VoNR";
+      } else if (dataTechnology == "18(IWLAN)" && (voiceTechnology == "VoNR" || voiceTechnology == "VoLTE")) {
+        voiceTechnology = "VoWiFi";
+      }
+    }
+
     // final String nsaStatus =
     //     await CellService.getOverrideNetworkType();
     String type = cellDataList[0]['type'];
@@ -212,7 +224,7 @@ Future<CellData> getCellInfo() async {
         accurateCarrierName,
         mvnoName,
         isImsRegistered,
-        serviceStateInfo['voiceTechnology'],
+        voiceTechnology,
         serviceStateInfo['isRoaming'],
         nsaStatus,
       );
@@ -230,7 +242,7 @@ Future<CellData> getCellInfo() async {
         accurateCarrierName,
         mvnoName,
         isImsRegistered,
-        serviceStateInfo['voiceTechnology'],
+        voiceTechnology,
         serviceStateInfo['isRoaming'],
       );
     } else {

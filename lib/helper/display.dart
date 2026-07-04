@@ -14,7 +14,7 @@ String getNetworkIcon(CellData? cellData) {
     case '4G':
 
       // Start NSA checks
-      if (cellData.nrCcCount > 0) {
+      if (cellData.nrCcBands.isNotEmpty) {
         // NR NSA
         if (cellData.lteCcCount > 1) {
           // LTE CA

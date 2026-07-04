@@ -86,7 +86,9 @@ class _HomePageState extends State<HomePage> {
             // If NSA SINR is invalid, keep previous valid SINR
             cells.nsaSinr = _prevCellData?.nsaSinr ?? 2683662;
             if (cells.nsaSinr != 2683662) {
-              cells.nsaSinrModCount = _prevCellData!.nsaSinrModCount + 1; // Increment modification count
+              cells.nsaSinrModCount =
+                  _prevCellData!.nsaSinrModCount +
+                  1; // Increment modification count
             }
           }
 
@@ -94,7 +96,9 @@ class _HomePageState extends State<HomePage> {
             // If SINR is invalid, keep previous valid SINR
             cells.sinr = _prevCellData?.sinr ?? 2683662;
             if (cells.sinr != 2683662) {
-              cells.sinrModCount = _prevCellData!.sinrModCount + 1; // Increment modification count
+              cells.sinrModCount =
+                  _prevCellData!.sinrModCount +
+                  1; // Increment modification count
             }
           }
 
@@ -135,471 +139,439 @@ class _HomePageState extends State<HomePage> {
       setDarkMode(false); //for spookyservices
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: ListView(
-            physics: const ClampingScrollPhysics(),
-            children: [
-              if (_cellData == null || _cellData!.dataConnStatus == 0)
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       color: cLD(
-                //         Theme.of(context).colorScheme.primaryContainer,
-                //         Theme.of(context).colorScheme.onPrimary,
-                //       ), // Color must be inside BoxDecoration
-                //       borderRadius: BorderRadius.circular(
-                //         20,
-                //       ), // Apply rounded corners
-                //     ),
-                //     child: Padding(
-                //       padding: EdgeInsets.only(
-                //         left: 50,
-                //         right: 50,
-                //         top: 10,
-                //         bottom: 10,
-                //       ),
-                //       child: Text(
-                //         "Data service is DISCONNECTED\nInfo may be inaccurate.",
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(fontSize: 16, color: Colors.white),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryContainer, // Color must be inside BoxDecoration
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ), // Apply rounded corners
-                  ),
+    return ListView(
+       primary: false, // Prevents PrimaryScrollController conflict
+      padding: EdgeInsets.zero,
+      children: [
+        // if (_cellData == null || _cellData!.dataConnStatus == 0)
+        // Padding(
+        //   padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+        //   child: Container(
+        //     decoration: BoxDecoration( 
+        //       color: cLD(
+        //         Theme.of(context).colorScheme.primaryContainer,
+        //         Theme.of(context).colorScheme.onPrimary,
+        //       ), // Color must be inside BoxDecoration
+        //       borderRadius: BorderRadius.circular(
+        //         20,
+        //       ), // Apply rounded corners
+        //     ),
+        //     child: Padding(
+        //       padding: EdgeInsets.only(
+        //         left: 50,
+        //         right: 50,
+        //         top: 10,
+        //         bottom: 10,
+        //       ),
+        //       child: Text(
+        //         "Data service is DISCONNECTED\nInfo may be inaccurate.",
+        //         textAlign: TextAlign.center,
+        //         style: TextStyle(fontSize: 16, color: Colors.white),
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context)
+                  .colorScheme
+                  .primaryContainer, // Color must be inside BoxDecoration
+              borderRadius: BorderRadius.circular(20), // Apply rounded corners
+            ),
 
-                  child: Column(
-                    children: [
-                      SizedBox(height: 15),
+            child: Column(
+              children: [
+                SizedBox(height: 15),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            getNetworkIcon(_cellData),
-                            // width: 65,
-                            height: 60,
-                          ),
-                          SizedBox(width: 10),
-                          Image.asset(
-                            getImsIcon(_imsStatus),
-                            // width: 65,
-                            height: 65,
-                          ),
-                          if (_cellData != null && _cellData!.isRoaming) ...[
-                            SizedBox(width: 10),
-                            Image.asset(
-                              'assets/images/NetworkIcons/Roaming.png',
-                              // width: 65,
-                              height: 65,
-                            ),
-                          ],
-                        ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      getNetworkIcon(_cellData),
+                      // width: 65,
+                      height: 60,
+                    ),
+                    SizedBox(width: 10),
+                    Image.asset(
+                      getImsIcon(_imsStatus),
+                      // width: 65,
+                      height: 65,
+                    ),
+                    if (_cellData != null && _cellData!.isRoaming) ...[
+                      SizedBox(width: 10),
+                      Image.asset(
+                        'assets/images/NetworkIcons/Roaming.png',
+                        // width: 65,
+                        height: 65,
                       ),
-                      SizedBox(height: 10),
-                      Text(getDescription(_cellData)),
+                    ],
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text(getDescription(_cellData)),
 
-                      if (getDescription(_cellData) != "No Signal") ...[
-                        if (_cellData != null &&
-                            (_cellData!.nsaStatus == "anchor" ||
-                                (_cellData!.nsaStatus == "connected" &&
-                                    _cellData!.nrCcCount == 0))) ...[
-                          // LTE Anchor Band aka fake 5G logo
-                          SizedBox(height: 5),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  "[5G NSA] This is an anchor band.",
-                                ),
-                              ),
-                            ],
+                if (getDescription(_cellData) != "No Signal") ...[
+                  if (_cellData != null &&
+                      (_cellData!.nsaStatus == "anchor" ||
+                          (_cellData!.nsaStatus == "connected" &&
+                              _cellData!.nrCcCount == 0))) ...[
+                    // LTE Anchor Band aka fake 5G logo
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            "[5G NSA] This is an anchor band.",
                           ),
-                        ],
-
-                        if (_cellData != null && _cellData!.isRoaming) ...[
-                          SizedBox(height: 5),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  "Roaming outside home carrier.",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-
-                        SizedBox(height: 10),
-                        // Text(
-                        //   "Carrier Info",
-                        //   style: TextStyle(
-                        //     fontWeight: FontWeight.bold,
-                        //     fontSize: 16,
-                        //   ),
-                        // ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              fit:
-                                  (_cellData != null &&
-                                      _cellData!.mvnoName != "")
-                                  ? FlexFit
-                                        .tight // yes mvno, expand to fill space
-                                  : FlexFit.loose, // no mvno,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "PLMN",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    _cellData != null
-                                        ? _cellData!.mccmnc
-                                        : "Loading...",
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            Column(
-                              children: [
-                                Text(
-                                  "Carrier",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  _cellData != null
-                                      ? _cellData!.carrierName
-                                      : "Loading...",
-                                ),
-                              ],
-                            ),
-
-                            if (_cellData != null && !(_cellData!.isRoaming) &&  _cellData!.mvnoName != "")
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "Brand",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(_cellData!.mvnoName),
-                                  ],
-                                ),
-                              ),
-                          ],
                         ),
-                        SizedBox(height: 5),
-                        Column(
+                      ],
+                    ),
+                  ],
+
+                  if (_cellData != null && _cellData!.isRoaming) ...[
+                    SizedBox(height: 5),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            "Roaming outside home carrier.",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+
+                  SizedBox(height: 10),
+                  // Text(
+                  //   "Carrier Info",
+                  //   style: TextStyle(
+                  //     fontWeight: FontWeight.bold,
+                  //     fontSize: 16,
+                  //   ),
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        fit: (_cellData != null && _cellData!.mvnoName != "")
+                            ? FlexFit
+                                  .tight // yes mvno, expand to fill space
+                            : FlexFit.loose, // no mvno,
+                        child: Column(
                           children: [
                             Text(
-                              "Connecting Bands and Frequencies",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                              "PLMN",
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            if (_cellData != null && _cellData!.lteCcCount >= 1)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    getNetworkIcon4G(_cellData),
-                                    // width: 35,
-                                    height: 11.75,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    _cellData != null
-                                        ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
-                                        : "Loading...",
-                                  ),
-                                ],
-                              ),
-                            if (_cellData != null && _cellData!.nrCcBands.isNotEmpty)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    getNetworkIcon5G(_cellData),
-                                    // width: 35,
-                                    height: 11.75,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    _cellData != null
-                                        ? "${_cellData!.nrCcBands.join(" + ")}${(_cellData!.nrCcCount == -1) ? "" : " ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}"}"
-                                         // if ccCount is 999, it means CA is used but CC count is unreliable, so show [CA+] instead of (999CC)
-                                         // if ccCount is -1, it means CC count inaccurate, dont show it.
-                                        : "Loading...",
-                                  ),
-                                ],
-                              ),
+                            Text(
+                              _cellData != null
+                                  ? _cellData!.mccmnc
+                                  : "Loading...",
+                            ),
                           ],
                         ),
-                        SizedBox(height: 5),
+                      ),
+
+                      Column(
+                        children: [
+                          Text(
+                            "Carrier",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            _cellData != null
+                                ? _cellData!.carrierName
+                                : "Loading...",
+                          ),
+                        ],
+                      ),
+
+                      if (_cellData != null &&
+                          !(_cellData!.isRoaming) &&
+                          _cellData!.mvnoName != "")
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                "Brand",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(_cellData!.mvnoName),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                  Column(
+                    children: [
+                      Text(
+                        "Connecting Bands and Frequencies",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      if (_cellData != null && _cellData!.lteCcCount >= 1)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              getNetworkIcon4G(_cellData),
+                              // width: 35,
+                              height: 11.75,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              _cellData != null
+                                  ? "${_cellData!.lteCcBands.join(" + ")} (${_cellData!.lteCcCount}CC)"
+                                  : "Loading...",
+                            ),
+                          ],
+                        ),
+                      if (_cellData != null && _cellData!.nrCcBands.isNotEmpty)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              getNetworkIcon5G(_cellData),
+                              // width: 35,
+                              height: 11.75,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              _cellData != null
+                                  ? "${_cellData!.nrCcBands.join(" + ")}${(_cellData!.nrCcCount == -1) ? "" : " ${_cellData!.nrCcCount == 999 ? "[CA+]" : "(${_cellData!.nrCcCount}CC)"}"}"
+                                  // if ccCount is 999, it means CA is used but CC count is unreliable, so show [CA+] instead of (999CC)
+                                  // if ccCount is -1, it means CC count inaccurate, dont show it.
+                                  : "Loading...",
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                ],
+                if (getDescription(_cellData) == "No Signal")
+                  SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "IMS Status",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              getImsIcon(
+                                _imsStatus,
+                                overlay: true,
+                              ), // use overlay icons because this is small
+                              // width: 11.75,
+                              height: 20,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              _imsStatus != null
+                                  ? _imsStatus!.replaceFirst(
+                                      "VoWiFi",
+                                      "Wi-Fi Calling",
+                                    )
+                                  : "No IMS info",
+                            ),
+                          ],
+                        ),
                       ],
-                      if (getDescription(_cellData) == "No Signal")
-                        SizedBox(height: 5),
+                    ),
+                  ],
+                ),
+                if (getDescription(_cellData) != "No Signal") ...[
+                  SizedBox(height: 5),
+                  Column(
+                    children: [
+                      Text(
+                        "Signal Strength",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Column(
                             children: [
                               Text(
-                                "IMS Status",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                                _cellData != null &&
+                                        _cellData!.networkType == "4G"
+                                    ? "RSRP"
+                                    : "SS RSRP",
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    getImsIcon(
-                                      _imsStatus,
-                                      overlay: true,
-                                    ), // use overlay icons because this is small
-                                    // width: 11.75,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    _imsStatus != null
-                                        ? _imsStatus!.replaceFirst(
-                                            "VoWiFi",
-                                            "Wi-Fi Calling",
-                                          )
-                                        : "No IMS info",
-                                  ),
-                                ],
+                              getRsrpDisplay(
+                                _cellData != null ? _cellData!.rsrp : 0,
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      if (getDescription(_cellData) != "No Signal") ...[
-                        SizedBox(height: 5),
-                        Column(
-                          children: [
-                            Text(
-                              "Signal Strength",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text(
-                                      _cellData != null &&
-                                              _cellData!.networkType == "4G"
-                                          ? "RSRP"
-                                          : "SS RSRP",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    getRsrpDisplay(
-                                      _cellData != null ? _cellData!.rsrp : 0,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      _cellData != null &&
-                                              _cellData!.networkType == "4G"
-                                          ? "RSRQ"
-                                          : "SS RSRQ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    getRsrqDisplay(
-                                      _cellData != null
-                                          ? _cellData!.rsrq
-                                          : 2683662,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      _cellData != null &&
-                                              _cellData!.networkType == "4G"
-                                          ? "SNR"
-                                          : "SS SINR",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    getSinrDisplay(
-                                      _cellData != null
-                                          ? _cellData!.sinr
-                                          : 2683662,
-                                      _cellData != null
-                                          ? _cellData!.sinrModCount
-                                          : 0,
-                                    ),
-                                  ],
-                                ),
-                                if (_cellData != null &&
-                                    _cellData!.networkType == "4G")
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "TA",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      getTaDisplay(
-                                        _cellData != null
-                                            ? _cellData!.ta
-                                            : 2683662,
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                            if (_cellData != null &&
-                                _cellData!.networkType == "4G" &&
-                                _cellData!.nrCcCount >= 1) ...[
-                              SizedBox(height: 5),
+                          Column(
+                            children: [
                               Text(
-                                "5G NSA Signal Strength",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                                _cellData != null &&
+                                        _cellData!.networkType == "4G"
+                                    ? "RSRQ"
+                                    : "SS RSRQ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "SS RSRP",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      getRsrpDisplay(
-                                        _cellData != null
-                                            ? _cellData!.nsaRsrp
-                                            : 0,
-                                      ),
-                                    ],
-                                  ),
-
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "SS RSRQ",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      getRsrqDisplay(
-                                        _cellData != null
-                                            ? _cellData!.nsaRsrq
-                                            : 2683662,
-                                      ),
-                                    ],
-                                  ),
-
-                                  if (_cellData != null)
-                                    //   && _cellData!.nsaSinr < 70)
-                                    Column(
-                                      children: [
-                                        Text(
-                                          "SS SINR",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        getSinrDisplay(
-                                          _cellData != null
-                                              ? _cellData!.nsaSinr
-                                              : 2683662,
-                                          _cellData!.nsaSinrModCount,
-                                        ),
-                                      ],
-                                    ),
-                                ],
+                              getRsrqDisplay(
+                                _cellData != null ? _cellData!.rsrq : 2683662,
                               ),
                             ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                _cellData != null &&
+                                        _cellData!.networkType == "4G"
+                                    ? "SNR"
+                                    : "SS SINR",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              getSinrDisplay(
+                                _cellData != null ? _cellData!.sinr : 2683662,
+                                _cellData != null ? _cellData!.sinrModCount : 0,
+                              ),
+                            ],
+                          ),
+                          if (_cellData != null &&
+                              _cellData!.networkType == "4G")
+                            Column(
+                              children: [
+                                Text(
+                                  "TA",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                getTaDisplay(
+                                  _cellData != null ? _cellData!.ta : 2683662,
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                      if (_cellData != null &&
+                          _cellData!.networkType == "4G" &&
+                          _cellData!.nrCcCount >= 1) ...[
+                        SizedBox(height: 5),
+                        Text(
+                          "5G NSA Signal Strength",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "SS RSRP",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                getRsrpDisplay(
+                                  _cellData != null ? _cellData!.nsaRsrp : 0,
+                                ),
+                              ],
+                            ),
+
+                            Column(
+                              children: [
+                                Text(
+                                  "SS RSRQ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                getRsrqDisplay(
+                                  _cellData != null
+                                      ? _cellData!.nsaRsrq
+                                      : 2683662,
+                                ),
+                              ],
+                            ),
+
+                            if (_cellData != null)
+                              //   && _cellData!.nsaSinr < 70)
+                              Column(
+                                children: [
+                                  Text(
+                                    "SS SINR",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  getSinrDisplay(
+                                    _cellData != null
+                                        ? _cellData!.nsaSinr
+                                        : 2683662,
+                                    _cellData!.nsaSinrModCount,
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
-                        // SizedBox(height: 10),
-                        // Column(
-                        //   children: [
-                        //     Text(
-                        //       "Detailed Network Type",
-                        //       style: TextStyle(
-                        //         fontWeight: FontWeight.bold,
-                        //         fontSize: 16,
-                        //       ),
-                        //     ),
-                        //     Text(_cellData != null
-                        //         ? _cellData!.detailedNetworkType
-                        //         : "Loading..."),
-                        //   ],
-                        // ),
-                        // SizedBox(height: 10),
-                        // Column(
-                        //   children: [
-                        //     Text(
-                        //       "Debug",
-                        //       style: TextStyle(
-                        //         fontWeight: FontWeight.bold,
-                        //         fontSize: 16,
-                        //       ),
-                        //     ),
-                        //     Text(_statusMessage),
-                        //   ],
-                        // ),
                       ],
-                      SizedBox(height: 13),
                     ],
                   ),
-                ),
-              ),
-            ],
+                  // SizedBox(height: 10),
+                  // Column(
+                  //   children: [
+                  //     Text(
+                  //       "Detailed Network Type",
+                  //       style: TextStyle(
+                  //         fontWeight: FontWeight.bold,
+                  //         fontSize: 16,
+                  //       ),
+                  //     ),
+                  //     Text(_cellData != null
+                  //         ? _cellData!.detailedNetworkType
+                  //         : "Loading..."),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 10),
+                  // Column(
+                  //   children: [
+                  //     Text(
+                  //       "Debug",
+                  //       style: TextStyle(
+                  //         fontWeight: FontWeight.bold,
+                  //         fontSize: 16,
+                  //       ),
+                  //     ),
+                  //     Text(_statusMessage),
+                  //   ],
+                  // ),
+                ],
+                SizedBox(height: 13),
+              ],
+            ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
